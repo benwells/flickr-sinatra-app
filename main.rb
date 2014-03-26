@@ -15,7 +15,7 @@ class FlickrApp < Sinatra::Base
     config_file "config/settings.yml"
   end
 
-  # initializer route
+  # initializer route More words
 
   # View photos attached to application (main view)
 
