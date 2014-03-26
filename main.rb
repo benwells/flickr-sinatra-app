@@ -16,7 +16,7 @@ class FlickrApp < Sinatra::Base
   end
 
   # root route (really for testing only)
-  get '/' do
+  get '/list' do
     # flash[:notice] = "testing flash"
     haml :root
   end
@@ -28,7 +28,7 @@ class FlickrApp < Sinatra::Base
     session['shared_secret'] = params[:shared_secret];
     session['access_token'] = params[:access_token];
     session['access_secret'] = params[:access_secret];
-    redirect '/'
+    redirect '/list'
   end
 
   # View photos attached to application (main view)
