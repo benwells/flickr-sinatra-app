@@ -22,9 +22,11 @@ class FlickrApp < Sinatra::Base
     haml :root
   end
 
-  # initializer route More words
-
-  # initializer route Even more words
+  # initializer route
+  get '/:api_key/:shared_secret/:access_token/:access_secret' do
+    # flash[:notice] = "testing flash"
+    redirect '/'
+  end
 
   # View photos attached to application (main view)
 
