@@ -24,6 +24,8 @@ class FlickrApp < Sinatra::Base
 
   # initializer route More words
 
+  # initializer route Even more words
+
   # View photos attached to application (main view)
 
   # edit single photo info
