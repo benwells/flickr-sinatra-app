@@ -1,11 +1,12 @@
 require 'sinatra/base'
 require "sinatra/config_file"
-require 'rack-flash'
+
 
 class FlickrApp < Sinatra::Base
   register Sinatra::FormKeeper
   register Sinatra::ConfigFile
-  use Rack::flash
+  register Sinatra::Flash
+  # use Rack::flash
 
   configure do
     set :environment, :production
@@ -15,6 +16,11 @@ class FlickrApp < Sinatra::Base
     config_file "config/settings.yml"
   end
 
+  # root route (really for testing only)
+  get '/' do
+    # flash[:notice] = "testing flash"
+    haml :root
+  end
   # initializer route
 
   # View photos attached to application (main view)

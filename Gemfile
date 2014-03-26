@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 gem "sinatra"
 gem "sinatra-formkeeper"
-gem "rack-flash3"
+gem "sinatra-flash"
 gem "shotgun"
 gem "haml"
 gem 'newrelic_rpm'
