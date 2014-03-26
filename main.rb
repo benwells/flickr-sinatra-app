@@ -25,23 +25,22 @@ class FlickrApp < Sinatra::Base
   # initializer route
   get '/:api_key/:shared_secret/:access_token/:access_secret' do
     # flash[:notice] = "testing flash"
+
     session['api_key'] = params[:api_key];
     session['shared_secret'] = params[:shared_secret];
     session['access_token'] = params[:access_token];
     session['access_secret'] = params[:access_secret];
 
-    FlickRaw.shared_secret= session['shared_secret']
     FlickRaw.api_key = session['api_key']
-    #
-    token = flickr.get_request_token
-    session['access_token'] = token["oauth_token"];
-    session['access_secret'] = token["oauth_token_secret"];
-    # flickr.access_token = session['access_token']
-    # flickr.access_secret = session['access_secret']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
 
-    list = flickr.photos.getRecent
-    "#{list.to_s}"
-    # "#{flickr}"
+    #redirect line for Brandon working on uploads
+    # redirect '/upload'
+
+    #redirect line for Ben working on viewing vids
+    # redirect '/list/:page'
   end
 
   # View photos attached to application (main view)
