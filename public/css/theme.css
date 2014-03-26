@@ -1,0 +1,268 @@
+.breadcrumb .active>a {
+  color: black;
+}
+.breadcrumb {
+  background-color: #B3B5B6;
+}
+.breadcrumb .disabled>a {
+  color: #2D657D;
+}
+.btn-info {
+  border-radius:0px;
+  float:right;
+}
+/*changes to main area*/
+.container {
+  margin-top: 30px;
+}
+/*footer*/
+#footer {
+
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  background-color: #2c3033;
+  padding-right: 50px;
+  padding-bottom: 10px;
+  color: white;
+  opacity: 0.9;
+}
+footer {
+  padding-top: 15px;
+}
+#menu {
+  /* changes background color of left nav menu */
+    /*background: purple;*/
+}
+.pagination ul .active>a {
+  background-color: #B3B5B6;
+  color: black;
+}
+.pagination ul .active>a:hover {
+  cursor: pointer;
+}
+.pagination ul .disabled>a {
+  background-color: #fcfcfc;
+  color: #4090b3;
+}
+.pagination ul .disabled>a:hover {
+  cursor: pointer;
+}
+/* this is the class given to RB page sections */
+.rbsilverbg {
+    background-color: transparent;
+}
+/* background color of list view header row */
+tr.objectListHeader {
+    background-color:transparent;
+}
+/* background color of list view trs */
+tr.viewed {
+    background-color:transparent;
+}
+/* changes to the top navbar */
+.navbar-inner {
+  background-color: #9dbacc; /* fallback color, place your own. Changing this color will not take affect without also changing the gradient below. */
+
+  /* Gradients for modern browsers, replace as you see fit. The first color will be the color on the top of the navbar while the second is the bottom color.*/
+  background-image: -moz-linear-gradient(top, #9dbacc, #9dbacc);
+  background-image: -ms-linear-gradient(top, #9dbacc, #9dbacc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#9dbacc), to(#9dbacc));
+  background-image: -webkit-linear-gradient(top, #9dbacc, #9dbacc);
+  background-image: -o-linear-gradient(top, #9dbacc, #9dbacc);
+  background-image: linear-gradient(top, #9dbacc, #9dbacc);
+  background-repeat: repeat-x;
+  border-color: #9dbacc;
+  padding-top: 10px; padding-bottom: 10px;
+  opacity: 0.9;
+
+  /* IE8-9 gradient filter */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#9dbacc', endColorstr='#9dbacc', GradientType=0);
+}
+
+.navbar .nav>li>a  {
+  color: #ffffff;
+  font-weight: 400
+}
+
+/*Required Inputs Border-Left Color*/
+input.requiredInput {
+  border-left: 3px solid #990000;
+}
+
+
+/* hr color */
+hr {
+  background-color: #697F8D;
+  height: 3px;
+}
+
+/*for the "or" in the navbar*/
+.navbar-text {
+  color: #ffffff;
+}
+
+/* alert success colors */
+.alert-success{
+    background-color: #dff0d8;
+  border-color: #d6e9c6;
+/*  color: #468847;*/
+
+}
+
+.alert-info{
+  background-color: #a7c1d0;
+  border-color: #a7c1d0;
+/*  color: #ffffff;*/
+}
+
+/* btn primary colors */
+.btn-primary {
+  border-radius:0px;
+  background-color: #9dbacc;
+  border-color: #9dbacc;
+  color:white;
+  background-image: -moz-linear-gradient(top, #9dbacc, #9dbacc);
+  background-image: -ms-linear-gradient(top, #9dbacc, #9dbacc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#9dbacc), to(#9dbacc));
+  background-image: -webkit-linear-gradient(top, #9dbacc, #9dbacc);
+  background-image: -o-linear-gradient(top, #9dbacc, #9dbacc);
+  background-image: linear-gradient(top, #9dbacc, #9dbacc);
+  background-repeat: repeat-x;
+  font-weight: 600;
+}
+
+.btn:hover {
+  color:white;
+}
+
+.btn{
+  color:white;
+}
+
+.btn-primary:hover {
+  background-color: #7E95A3;
+  border-color: #7E95A3;
+  background-image: -moz-linear-gradient(top, #7E95A3, #7E95A3);
+  background-image: -ms-linear-gradient(top, #7E95A3, #7E95A3);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#7E95A3), to(#7E95A3));
+  background-image: -webkit-linear-gradient(top, #7E95A3, #7E95A3);
+  background-image: -o-linear-gradient(top, #7E95A3, #7E95A3);
+  background-image: linear-gradient(top, #7E95A3, #7E95A3);
+  background-repeat: repeat-x;
+  font-weight: 600;
+}
+
+/* btn success colors */
+.btn-success{
+  background-color: #9BA897;
+  border-color: #9BA897;
+  color:white;
+  border-radius:0px;
+  background-image: -moz-linear-gradient(top, #9BA897, #9BA897);
+  background-image: -ms-linear-gradient(top, #9BA897, #9BA897);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#9BA897), to(#9BA897));
+  background-image: -webkit-linear-gradient(top, #9BA897, #9BA897);
+  background-image: -o-linear-gradient(top, #9BA897, #9BA897);
+  background-image: linear-gradient(top, #9BA897, #9BA897);
+  background-repeat: repeat-x;
+  font-weight: 600;
+}
+
+.btn-success:hover {
+  background-color: #4E544C;
+  border-color: #4E544C;
+  color:white;
+  background-image: -moz-linear-gradient(top, #4E544C, #4E544C);
+  background-image: -ms-linear-gradient(top, #4E544C, #4E544C);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#4E544C), to(#4E544C));
+  background-image: -webkit-linear-gradient(top, #4E544C, #4E544C);
+  background-image: -o-linear-gradient(top, #4E544C, #4E544C);
+  background-image: linear-gradient(top, #4E544C, #4E544C);
+  background-repeat: repeat-x;
+  font-weight: 600;
+}
+
+
+
+/* btn danger colors */
+.btn-danger{
+  border-radius:0px;
+  background-color: #FF8566;
+  border-color: #FF8566;
+  color:white;
+  background-image: -moz-linear-gradient(top, #FF8566, #FF8566);
+  background-image: -ms-linear-gradient(top, #FF8566, #FF8566);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FF8566), to(#FF8566));
+  background-image: -webkit-linear-gradient(top, #FF8566, #FF8566);
+  background-image: -o-linear-gradient(top, #FF8566, #FF8566);
+  background-image: linear-gradient(top, #FF8566, #FF8566);
+  background-repeat: repeat-x;
+}
+
+.btn-danger:hover {
+  background-color: #B25D47;
+  border-color: #B25D47;
+  color: white;
+  background-image: -moz-linear-gradient(top, #B25D47, #B25D47);
+  background-image: -ms-linear-gradient(top, #B25D47, #B25D47);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#B25D47), to(#B25D47));
+  background-image: -webkit-linear-gradient(top, #B25D47, #B25D47);
+  background-image: -o-linear-gradient(top, #B25D47, #B25D47);
+  background-image: linear-gradient(top, #B25D47, #B25D47);
+  background-repeat: repeat-x;
+}
+
+/* btn warning colors */
+.btn-warning{
+  background-color: #E6AF5C;
+  border-color: #E6AF5C;
+  color:white;
+  background-image: -moz-linear-gradient(top, #E6AF5C, #E6AF5C);
+  background-image: -ms-linear-gradient(top, #E6AF5C, #E6AF5C);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#E6AF5C), to(#E6AF5C));
+  background-image: -webkit-linear-gradient(top, #E6AF5C, #E6AF5C);
+  background-image: -o-linear-gradient(top, #E6AF5C, #E6AF5C);
+  background-image: linear-gradient(top, #E6AF5C, #E6AF5C);
+  background-repeat: repeat-x;
+}
+
+.btn-warning:hover {
+  background-color: #B88C4A;
+  border-color: #B88C4A;
+  color:white;
+  background-image: -moz-linear-gradient(top, #B88C4A, #B88C4A);
+  background-image: -ms-linear-gradient(top, #B88C4A, #B88C4A);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#B88C4A), to(#B88C4A));
+  background-image: -webkit-linear-gradient(top, #B88C4A, #B88C4A);
+  background-image: -o-linear-gradient(top, #B88C4A, #B88C4A);
+  background-image: linear-gradient(top, #B88C4A, #B88C4A);
+  background-repeat: repeat-x;
+}
+
+/* submission tr */
+input[value="Save and Continue"] { margin-bottom: 20px; }
+input[value="Submit"] { margin-bottom: 20px; }
+input[value="Save"] { margin-bottom: 20px; }
+/* changing the styling of links */
+
+/* unvisited link */
+a:link {
+    /*color:#FF0000;*/
+}
+
+/* visited link */
+a:visited {
+    /*color:#00FF00;*/
+}
+
+/* mouse over link */
+a:hover {
+    /*color:#FF00FF;*/
+}
+
+/* selected link */
+a:active {
+    /*color:#0000FF;*/
+}
