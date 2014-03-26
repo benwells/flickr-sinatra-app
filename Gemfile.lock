@@ -1,0 +1,50 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    backports (3.6.0)
+    formkeeper (0.0.13)
+      hpricot
+      rack
+    haml (4.0.5)
+      tilt
+    hpricot (0.8.6)
+    multi_json (1.9.2)
+    newrelic_rpm (3.7.3.204)
+    rack (1.5.2)
+    rack-flash3 (1.0.5)
+      rack
+    rack-protection (1.5.2)
+      rack
+    rack-test (0.6.2)
+      rack (>= 1.0)
+    shotgun (0.9)
+      rack (>= 1.0)
+    sinatra (1.4.4)
+      rack (~> 1.4)
+      rack-protection (~> 1.4)
+      tilt (~> 1.3, >= 1.3.4)
+    sinatra-contrib (1.4.2)
+      backports (>= 2.0)
+      multi_json
+      rack-protection
+      rack-test
+      sinatra (~> 1.4.0)
+      tilt (~> 1.3)
+    sinatra-formkeeper (0.0.7)
+      formkeeper (~> 0.0.12)
+      hpricot
+      rack
+      sinatra
+    tilt (1.4.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  haml
+  newrelic_rpm
+  rack-flash3
+  shotgun
+  sinatra
+  sinatra-contrib
+  sinatra-formkeeper

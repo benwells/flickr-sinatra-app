@@ -6,3 +6,4 @@ gem "shotgun"
 gem "haml"
 gem 'newrelic_rpm'
 gem 'sinatra-contrib'
+gem 'flickraw'
