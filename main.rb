@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require "sinatra/config_file"
+require 'flickraw'
 
 
 class FlickrApp < Sinatra::Base
@@ -28,7 +29,19 @@ class FlickrApp < Sinatra::Base
     session['shared_secret'] = params[:shared_secret];
     session['access_token'] = params[:access_token];
     session['access_secret'] = params[:access_secret];
-    redirect '/list'
+
+    FlickRaw.shared_secret= session['shared_secret']
+    FlickRaw.api_key = session['api_key']
+    #
+    token = flickr.get_request_token
+    session['access_token'] = token["oauth_token"];
+    session['access_secret'] = token["oauth_token_secret"];
+    # flickr.access_token = session['access_token']
+    # flickr.access_secret = session['access_secret']
+
+    list = flickr.photos.getRecent
+    "#{list.to_s}"
+    # "#{flickr}"
   end
 
   # View photos attached to application (main view)
