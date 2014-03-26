@@ -6,7 +6,6 @@ class FlickrApp < Sinatra::Base
   register Sinatra::FormKeeper
   register Sinatra::ConfigFile
   register Sinatra::Flash
-  # use Rack::flash
 
   configure do
     set :environment, :production
@@ -25,6 +24,10 @@ class FlickrApp < Sinatra::Base
   # initializer route
   get '/:api_key/:shared_secret/:access_token/:access_secret' do
     # flash[:notice] = "testing flash"
+    session['api_key'] = params[:api_key];
+    session['shared_secret'] = params[:shared_secret];
+    session['access_token'] = params[:access_token];
+    session['access_secret'] = params[:access_secret];
     redirect '/'
   end
 
