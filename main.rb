@@ -21,7 +21,8 @@ class FlickrApp < Sinatra::Base
     # flash[:notice] = "testing flash"
     haml :root
   end
-  # initializer route
+
+  # initializer route More words
 
   # View photos attached to application (main view)
 
