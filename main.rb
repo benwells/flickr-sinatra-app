@@ -37,7 +37,7 @@ class FlickrApp < Sinatra::Base
     flickr.access_secret = session['access_secret']
 
     #redirect line for Brandon working on uploads
-    # redirect '/upload'
+    redirect '/upload'
 
     #redirect line for Ben working on viewing vids
     # redirect '/list/:page'
@@ -50,5 +50,45 @@ class FlickrApp < Sinatra::Base
   #delete photo
 
   #upload new photo
+  ##############################################################
+  get '/upload' do
+    haml :upload
+  end
+
+  post '/upload' do
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
+    form do
+      field :file, :present => true
+    end
+
+    if form.failed?
+      flash[:notice] = "You must choose a file."
+      redirect '/upload';
+    else
+
+      tmpfile = params[:file][:tempfile]
+
+      # upload the file
+      
+      #response = flickr.upload_photo path, :title => (params[:title] + ""), :description => (params[:description] + ""), :tags => (session['visitor_id'] + " " + session['app_id']), :is_public => 0, :hidden => 0
+      response = flickr.upload_photo tmpfile, :title => (params[:title] + ""), :description => (params[:description] + ""), :is_public => 0, :hidden => 0
+
+           
+      if response["stat"] == "ok"
+        #newPhotoId = response['photoid']
+        #newPhotoTicket = response['ticketid']
+        flash[:notice] = "Photo Uploaded Successfully."
+        redirect "/upload"
+      else
+        #flash[:notice] = "Oops, something went wrong. Please try again."
+        flash[:notice] = "#{response}"
+        redirect "/upload"
+      end
+    end
+  end
 
 end
