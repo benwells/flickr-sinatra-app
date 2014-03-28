@@ -43,7 +43,11 @@ class FlickrApp < Sinatra::Base
     # redirect '/list/:page'
   end
 
+
   # View photos attached to application (main view)
+  get '/list' do
+    "route created"
+  end
 
   # edit single photo info
 
