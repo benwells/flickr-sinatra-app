@@ -89,7 +89,7 @@ class FlickrApp < Sinatra::Base
         redirect "/upload"
       else
         #flash[:notice] = "Oops, something went wrong. Please try again."
-        flash[:notice] = "#{response}"
+        flash[:notice] = "#{response['stat']} #{response['photoid']} #{response['ticketid']}"
         redirect "/upload"
       end
     end
