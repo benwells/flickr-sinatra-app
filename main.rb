@@ -70,29 +70,48 @@ class FlickrApp < Sinatra::Base
     end
 
     if form.failed?
-      flash[:notice] = "You must choose a file."
+      flash[:notice] = "You must choose a valid photo file. Valid image formats include: jpeg, jpg and png."
       redirect '/upload';
     else
 
-      tmpfile = params[:file][:tempfile]
+      ##########Form validation##############
+      validFile = false
+      fileType = params[:file][:type]
+      if(fileType == "image/jpeg" || fileType == "image/jpg" || fileType == "image/png")
+        validFile = true
+      end
+      #######################################
 
-      # upload the file
-      
-      #response = flickr.upload_photo path, :title => (params[:title] + ""), :description => (params[:description] + ""), :tags => (session['visitor_id'] + " " + session['app_id']), :is_public => 0, :hidden => 0
-      response = flickr.upload_photo tmpfile, :title => (params[:title] + ""), :description => (params[:description] + ""), :is_public => 0, :hidden => 0
-
-           
-      if response["stat"] == "ok"
-        #newPhotoId = response['photoid']
-        #newPhotoTicket = response['ticketid']
-        flash[:notice] = "Photo Uploaded Successfully."
-        redirect "/upload"
+      if(!validFile)
+        flash[:notice] = "You must choose a valid photo file. Valid image formats include: jpeg, jpg and png."
+        redirect '/upload';
       else
-        #flash[:notice] = "Oops, something went wrong. Please try again."
-        flash[:notice] = "#{response['stat']} #{response['photoid']} #{response['ticketid']}"
-        redirect "/upload"
+
+        tmpfile = params[:file][:tempfile]
+
+        # If there is no title entered Flickr will add in the last part of the :tempfile value which looks like crap.
+        # Here is my solution.
+        title = ""
+        if(params[:title] == "")
+          arr = params[:file][:filename].split(".")
+          title = arr[0]
+        else
+          title = params[:title]
+        end
+
+
+        # upload the file
+        #photoID = flickr.upload_photo path, :title => title, :description => (params[:description] + ""), :tags => (session['visitor_id'] + " " + session['app_id']), :is_public => 0, :hidden => 0
+        photoID = flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :is_public => 0, :hidden => 0
+             
+        if photoID.to_i > 0
+          flash[:notice] = "Photo Uploaded Successfully."
+          redirect "/upload"
+        else
+          flash[:notice] = "Oops, something went wrong. Please try again."
+          redirect "/upload"
+        end
       end
     end
   end
-
 end
