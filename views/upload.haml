@@ -1,0 +1,19 @@
+.container-fluid
+  .row-fluid
+    .col-md-6.col-md-offset-3
+      %h3.alert
+        %a{href:'/list'}
+          %i.fa.fa-chevron-left
+        Upload New Photo
+        %span.glyphicon.glyphicon-film
+      %form.alert{id:'upload-form', role: 'form', action:"/upload", method:"post", enctype:"multipart/form-data"}
+        .form-group
+          %label{for:'title'} Title
+          %input.form-control{type:"text", name:"title", id:'title'}
+        .form-group
+          %label{for:'description'} Description
+          %textarea.form-control{rows:'3', type:'text', name:'description', id:'description'}
+        .form-group
+          %label{for:'file'} File
+          %input.form-control{type:"file", name:"file", id:'file'}
+        %button.btn.btn-lg.btn-info{type:"submit"} Upload
