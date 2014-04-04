@@ -39,15 +39,39 @@ class FlickrApp < Sinatra::Base
     #redirect line for Brandon working on uploads
     redirect '/upload'
 
-    #redirect line for Ben working on viewing vids
+    #redirect line for Brandon working on viewing photos
     # redirect '/list/:page'
   end
 
 
   # View photos attached to application (main view)
+  ############################################################
   get '/list' do
     "route created"
   end
+
+  get '/viewphotos/:requestId' do
+
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
+    #get all photos from flickr account
+    #@appPhotos = flickr.photos.search(:user_id => 'me',:tags => (params[:requestId].to_s), :privacy_filter => '5', :per_page => '100',:page => '1')
+
+    @appPhotos = flickr.photos.search(:user_id => 'me', :privacy_filter => '5', :per_page => '100',:page => '1')
+
+    # get user photos and app videos
+    haml :viewphotos
+  end
+
+  get '/view/:id/:farm/:server/:secret' do 
+    @source = 'http://farm' + params[:farm] + '.static.flickr.com/' + params[:server] + '/' + params[:id] + '_' + params[:secret] + '_m.jpg'
+    haml :view
+  end
+       
+
 
   # edit single photo info
 
@@ -114,7 +138,7 @@ class FlickrApp < Sinatra::Base
     end
 
     if form.failed?
-      flash[:notice] = "You must choose a valid photo file. Valid image formats include: jpeg, jpg and png."
+      flash[:notice] = "You must choose a file."
       redirect '/upload';
     else
 

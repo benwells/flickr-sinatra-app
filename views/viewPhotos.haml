@@ -1,0 +1,16 @@
+.container-fluid
+  .row-fluid
+    .col-md-8.col-md-offset-2
+      %table.table.table-striped#view-table
+        %thead
+          %th
+          %th Title
+          %th Photo Id
+        %tbody
+          - @appPhotos.each do |photo|
+            %tr
+              %td
+                %a.btn.btn-success{href:'/view/' + photo['id'].to_s + '/' + photo['farm'].to_s + '/' + photo['server'].to_s + '/' + photo['secret'].to_s} View
+              %td= photo['title']
+              %td= photo['id']
+       

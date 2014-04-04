@@ -1,0 +1,13 @@
+.container-fluid
+  .row-fluid
+    .col-md-6.col-md-offset-3
+      %h3.alert
+        %a{href:'#', onclick: 'history.back(); return false;'}
+          %i.fa.fa-chevron-left
+        View Photo
+        %span.glyphicon.glyphicon-film
+      %iframe.clearfix{:src=> @source + "", :width=>'500', :height =>'281', :frameborder=>'0'}
+
+
+
+
