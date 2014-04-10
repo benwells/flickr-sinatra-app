@@ -52,6 +52,50 @@ class FlickrApp < Sinatra::Base
   # edit single photo info
 
   #delete photo
+  #############################################################
+  get '/delete/:photoid' do
+
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
+    photoId = params[:photoid]
+    photoId = photoId.to_i
+
+    flickr.photos.delete(:photo_id => photoId)
+
+    flash[:notice] = "The photo has been deleted."
+    redirect '/list';
+  end
+
+
+  # Note to self, this needs to be updated
+  ################################
+  get '/attach/:photoid/:ids/:detachIds' do
+    
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+    photoId = params[:photoid].to_s;
+
+    if params[:ids] != '0'
+      photosToAttach = params[:ids].to_s.split(',');
+
+      photosToAttach.each do |ids|
+        addTags(:photoids => photoId,:tags => ids)
+      end
+    end
+    # Pretty sure this is not working.
+    if params[:detachIds] != '0'
+      photosToDetach = params[:detachIds].to_s.split(',');
+      photosToDetach.each do |id|
+        removeTag(:tag_id => id)
+      end
+    end
+    redirect '/list'
+  end
 
   #upload new photo
   ##############################################################
@@ -103,7 +147,7 @@ class FlickrApp < Sinatra::Base
         # upload the file
         #photoID = flickr.upload_photo path, :title => title, :description => (params[:description] + ""), :tags => (session['visitor_id'] + " " + session['app_id']), :is_public => 0, :hidden => 0
         photoID = flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :is_public => 0, :hidden => 0
-             
+
         if photoID.to_i > 0
           flash[:notice] = "Photo Uploaded Successfully."
           redirect "/upload"
