@@ -37,10 +37,10 @@ class FlickrApp < Sinatra::Base
     flickr.access_secret = session['access_secret']
 
     #redirect line for Brandon working on uploads
-    redirect '/upload'
+    #redirect '/upload'
 
     #redirect line for Brandon working on viewing photos
-    # redirect '/list/:page'
+    redirect '/viewphotos/1'
   end
 
 
@@ -67,13 +67,47 @@ class FlickrApp < Sinatra::Base
   end
 
   get '/view/:id/:farm/:server/:secret' do 
-    @source = 'http://farm' + params[:farm] + '.static.flickr.com/' + params[:server] + '/' + params[:id] + '_' + params[:secret] + '_m.jpg'
+    # Just some background info, the link we are building here is just getting the photo from flickr without have to go to the users photo wall.
+    # The photos are resized for some reason but you can specfiy how big you want them by adding a flag to the end of the url.
+    # There are two separate flags you should be aware of: _m and _b the first makes the photos very small and the other just makes it so
+    # the photos are not resized if they are less than a certain height or length. I have the second selected for obvious reasons.
+    @source = 'http://farm' + params[:farm] + '.static.flickr.com/' + params[:server] + '/' + params[:id] + '_' + params[:secret] + '_b.jpg'
     haml :view
   end
        
 
+  # Edit single photo info
+  ############################################################
+  get '/edit/:photoid' do
 
-  # edit single photo info
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
+    @id = params[:photoid]
+
+    @info = flickr.photos.getInfo :photo_id => @id
+
+    haml :edit
+  end
+
+  post '/update' do
+
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
+    @title = params["title"]
+    @description = params["description"]
+    @id = params["photo_id"]
+    
+    flickr.photos.setMeta(:photo_id => @id,:title => @title,:description => @description)
+
+    redirect '/viewphotos/1';
+  end
+
 
   #delete photo
   #############################################################
