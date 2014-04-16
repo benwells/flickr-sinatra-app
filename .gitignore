@@ -2,3 +2,4 @@
 config/settings.yml
 settings.yml
 log/newrelic_agent.log
+development.log
