@@ -23,7 +23,7 @@ class FlickrApp < Sinatra::Base
   end
 
   # initializer route
-  get '/:api_key/:shared_secret/:access_token/:access_secret' do
+  get '/:api_key/:shared_secret/:access_token/:access_secret/:visitor_id/:app_id' do
     # flash[:notice] = "testing flash"
 
     session['api_key'] = params[:api_key];
