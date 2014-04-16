@@ -6,7 +6,7 @@
           %i.fa.fa-chevron-left
         Upload New Photo
         %span.glyphicon.glyphicon-film
-      %form.alert{id:'upload-form', role: 'form', action:"/upload", method:"post", enctype:"multipart/form-data"}
+      %form.alert{id:'upload-form', role: 'form', action:"/upload", method:"post", enctype:"multipart/form-data", :class => "dropzone dz-clickable"}
         .form-group
           %label{for:'title'} Title
           %input.form-control{type:"text", name:"title", id:'title'}
