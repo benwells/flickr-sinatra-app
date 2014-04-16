@@ -30,6 +30,8 @@ class FlickrApp < Sinatra::Base
     session['shared_secret'] = params[:shared_secret];
     session['access_token'] = params[:access_token];
     session['access_secret'] = params[:access_secret];
+    session['visitor_id'] = params[:visitor_id];
+    session['app_id'] = params[:app_id];
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
