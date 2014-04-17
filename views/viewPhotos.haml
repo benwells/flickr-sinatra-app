@@ -22,4 +22,24 @@
               
               %td= photo['title']
               %td= photo['id']
+              
       %h2 All Photos
+      %table.table.table-striped#view-table
+        %thead
+          %th
+          %th
+          %th
+          %th Title
+          %th Photo Id
+        %tbody
+          - @allPhotos.each do |photo|
+            %tr
+              %td
+                %a.btn.btn-success{href:'/view/' + photo['id'].to_s + '/' + photo['farm'].to_s + '/' + photo['server'].to_s + '/' + photo['secret'].to_s} View
+              %td
+                %a.btn.btn-success{href:'/edit/' + photo['id'].to_s} Edit
+              %td
+                %a.btn.btn-success{href:'/delete/' + photo['id'].to_s} Delete
+              
+              %td= photo['title']
+              %td= photo['id']
