@@ -70,7 +70,8 @@ class FlickrApp < Sinatra::Base
 
   get '/viewphotos/:page' do
     #get all photos from flickr account
-    @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s},#{session['app_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
+    @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
+    @allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
 
     haml :viewphotos
   end
