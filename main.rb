@@ -133,7 +133,7 @@ class FlickrApp < Sinatra::Base
     flickr.photos.delete(:photo_id => photoId)
 
     flash[:notice] = "The photo has been deleted."
-    redirect '/list';
+    redirect '/viewphotos/1';
   end
 
 
@@ -209,6 +209,8 @@ class FlickrApp < Sinatra::Base
 
         # upload the file
         photoID = @flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :tags => (session['visitor_id'] + " " + session['app_id']), :is_public => 0, :hidden => 0
+
+        #This is a pre-production call that should not be used in production code. Used only for testing outside of Rollbase
         # photoID = flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :is_public => 0, :hidden => 0
 
         if photoID.to_i > 0
