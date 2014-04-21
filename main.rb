@@ -118,25 +118,6 @@ class FlickrApp < Sinatra::Base
   end
 
 
-  #delete photo
-  #############################################################
-  get '/delete/:photoid' do
-
-    FlickRaw.api_key = session['api_key']
-    FlickRaw.shared_secret = session['shared_secret']
-    flickr.access_token = session['access_token']
-    flickr.access_secret = session['access_secret']
-
-    photoId = params[:photoid]
-    photoId = photoId.to_i
-
-    flickr.photos.delete(:photo_id => photoId)
-
-    flash[:notice] = "The photo has been deleted."
-    redirect '/viewphotos/1';
-  end
-
-
   # This takes a list of comma seperated photo ids and the tag you would like to remove.
   ################################
   get '/detach/:photoids/:tag' do
@@ -146,33 +127,42 @@ class FlickrApp < Sinatra::Base
     flickr.access_token = session['access_token']
     flickr.access_secret = session['access_secret']
 
-    photoId = params[:photoids].to_s;
+    photoId = params[:photoids].to_s
 
-    info = flickr.photos.getInfo :photo_id => params['photoids'].to_i
 
-    info['tags']['tag'].each do |tag|
-      "#{tag}"
-    endn
+    if photoId != '0'
+      photosToDetach = photoId.to_s.split(',');
 
-    #flickr.photos.removeTag(:tag_id => info['tag']['id'])
+      photosToDetach.each do |id|
 
-    # # Pretty sure this is not working.
-    # if photoId != '0'
-    #   photosToDetach = photoId.to_s.split(',');
-    #
-    #   photosToDetach.each do |id|
-    #
-    #     info = flickr.photos.getInfo :photo_id => id.to_i
-    #
-    #     info.each do |tag|
-    #       if tag['tag'] == params[:tag]
-    #         flickr.photos.removeTag(:tag_id => tag['tag']['id'])
-    #       end
-    #     end
-    #   end
-    #
-    # end
-    #redirect '/viewphotos/1'
+        info = flickr.photos.getInfo :photo_id => id.to_i
+
+        hashResponse = (info.to_hash)
+
+        # This is an array of hashes.
+        tags = hashResponse['tags']['tag']
+
+        size = tags.length
+        count = 0
+        flag = 0
+
+        while count < size do
+          if tags[count].to_s == params["tag"]
+            flickr.photos.removeTag(:tag_id => tags[count]['id'])
+            flag = 1
+          end
+          count += 1
+        end
+
+        if flag != 1
+          flash[:notice] = "Error: Photo not found."
+        end
+        count = 0
+        flag = 0
+      end
+    end
+
+    redirect '/viewphotos/1'
   end
 
   #upload new photo
