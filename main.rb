@@ -70,8 +70,8 @@ class FlickrApp < Sinatra::Base
 
   get '/viewphotos/:page' do
     #get all photos from flickr account
-    @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s},#{session['app_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
-
+    @allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
+    @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
     haml :viewphotos
   end
 
@@ -137,31 +137,42 @@ class FlickrApp < Sinatra::Base
   end
 
 
-  # Note to self, this needs to be updated
+  # This takes a list of comma seperated photo ids and the tag you would like to remove.
   ################################
-  get '/attach/:photoid/:ids/:detachIds' do
+  get '/detach/:photoids/:tag' do
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
     flickr.access_token = session['access_token']
     flickr.access_secret = session['access_secret']
-    photoId = params[:photoid].to_s;
 
-    if params[:ids] != '0'
-      photosToAttach = params[:ids].to_s.split(',');
+    photoId = params[:photoids].to_s;
 
-      photosToAttach.each do |ids|
-        addTags(:photoids => photoId,:tags => ids)
-      end
-    end
-    # Pretty sure this is not working.
-    if params[:detachIds] != '0'
-      photosToDetach = params[:detachIds].to_s.split(',');
-      photosToDetach.each do |id|
-        removeTag(:tag_id => id)
-      end
-    end
-    redirect '/list'
+    info = flickr.photos.getInfo :photo_id => params['photoids'].to_i
+
+    info['tags']['tag'].each do |tag|
+      "#{tag}"
+    endn
+
+    #flickr.photos.removeTag(:tag_id => info['tag']['id'])
+
+    # # Pretty sure this is not working.
+    # if photoId != '0'
+    #   photosToDetach = photoId.to_s.split(',');
+    #
+    #   photosToDetach.each do |id|
+    #
+    #     info = flickr.photos.getInfo :photo_id => id.to_i
+    #
+    #     info.each do |tag|
+    #       if tag['tag'] == params[:tag]
+    #         flickr.photos.removeTag(:tag_id => tag['tag']['id'])
+    #       end
+    #     end
+    #   end
+    #
+    # end
+    #redirect '/viewphotos/1'
   end
 
   #upload new photo
