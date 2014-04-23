@@ -163,6 +163,7 @@ class FlickrApp < Sinatra::Base
         flag = 0
       end
     end
+  end
 
   #delete photo
   #############################################################
