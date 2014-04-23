@@ -164,6 +164,23 @@ class FlickrApp < Sinatra::Base
       end
     end
 
+  #delete photo
+  #############################################################
+  get '/delete/:photoid' do
+
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
+    photoId = params[:photoid]
+    photoId = photoId.to_i
+
+    flickr.photos.delete(:photo_id => photoId)
+
+    flash[:notice] = "The photo has been deleted."
+    redirect '/viewphotos/1';
+  end
 
   # Note to self, this needs to be updated
   ################################
