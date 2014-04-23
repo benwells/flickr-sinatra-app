@@ -70,8 +70,9 @@ class FlickrApp < Sinatra::Base
 
   get '/viewphotos/:page' do
     #get all photos from flickr account
-    @allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
     @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
+    @allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
+
     haml :viewphotos
   end
 
@@ -135,6 +136,7 @@ class FlickrApp < Sinatra::Base
 
       photosToDetach.each do |id|
 
+
         info = flickr.photos.getInfo :photo_id => id.to_i
 
         hashResponse = (info.to_hash)
@@ -159,6 +161,27 @@ class FlickrApp < Sinatra::Base
         end
         count = 0
         flag = 0
+      end
+    end
+
+
+  # Note to self, this needs to be updated
+  ################################
+  get '/attach/:photoids/:tag' do
+
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
+    photoIds = params[:photoids].to_s
+
+    if params[:photoids] != '0'
+      photosToAttach = photoIds.split(',')
+      photosToAttach.each do |ids|
+
+        flickr.photos.addTags(:photo_id => ids.to_i,:tags => params[:tag].to_s)
+
       end
     end
 
