@@ -8,6 +8,7 @@
           %th
           %th
           %th
+          %th
           %th Title
           %th Photo Id
         %tbody
@@ -19,13 +20,17 @@
                 %a.btn.btn-success{href:'/edit/' + photo['id'].to_s} Edit
               %td
                 %a.btn.btn-success{href:'/delete/' + photo['id'].to_s} Delete
-              
+              %td
+                %a.btn.btn-success{href:'/detach/' + photo['id'].to_s + "/" + session['app_id']} Detach
+
+
               %td= photo['title']
               %td= photo['id']
-              
+
       %h2 All Photos
       %table.table.table-striped#view-table
         %thead
+          %th
           %th
           %th
           %th
@@ -40,6 +45,8 @@
                 %a.btn.btn-success{href:'/edit/' + photo['id'].to_s} Edit
               %td
                 %a.btn.btn-success{href:'/delete/' + photo['id'].to_s} Delete
-              
+              %td
+                %a.btn.btn-success{href:'/attach/' + photo['id'].to_s + "/" + session['app_id']} Attach
+
               %td= photo['title']
               %td= photo['id']

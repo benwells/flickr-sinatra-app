@@ -163,7 +163,9 @@ class FlickrApp < Sinatra::Base
         flag = 0
       end
     end
+    redirect '/viewphotos/1';
   end
+
 
   #delete photo
   #############################################################
@@ -183,7 +185,7 @@ class FlickrApp < Sinatra::Base
     redirect '/viewphotos/1';
   end
 
-  # Note to self, this needs to be updated
+  # Note to self, this is fine.
   ################################
   get '/attach/:photoids/:tag' do
 
