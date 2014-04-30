@@ -47,7 +47,7 @@ class FlickrApp < Sinatra::Base
   end
 
   # initializer route
-  get '/init/:api_key/:shared_secret/:access_token/:access_secret/:visitor_id/:app_id' do
+  get '/init/:api_key/:shared_secret/:access_token/:access_secret/:visitor_id/:app_id/:mode' do
 
     #store params in session
     session['api_key'] = params[:api_key];
@@ -65,13 +65,18 @@ class FlickrApp < Sinatra::Base
     settings.fsesh = f
 
     #redirect line for Brandon working on viewing photos
-    redirect '/viewphotos/1'
+    if params[:mode] == 'e'
+      redirect '/list';
+    elsif params[:mode] == 'v'
+      redirect '/viewphotos';
+    end
   end
 
-  get '/viewphotos/:page' do
-    #get all photos from flickr account
-    @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
-    @allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '100',:page => '1')
+  get '/viewphotos' do
+    # Get all photos from flickr account
+    # The search method automatically sorts by uploaded at desc.
+    @userPhotos = getUserPhotos()
+    @appPhotos = getAppPhotos()
 
     haml :viewphotos
   end
@@ -86,8 +91,32 @@ class FlickrApp < Sinatra::Base
   end
 
 
+  ##############################################################################
+  # The setup crap for the index page.
+  get '/list' do
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+    @appPhotos = getAppPhotos()
+    @userPhotos = getUserPhotos()
+
+    @totalPhotos = @appPhotos.length + @userPhotos.length
+
+    # This is giving me an error.
+    # # Give all user photos that intersect with appPhotos a class attribute of 'selected'
+    # @appPhotos.each do |photo|
+    #   if (@appPhotos.include? photo)
+    #     photo['class'] = 'selected'
+    #   end
+    # end
+
+    haml :index
+  end
+
+
   # Edit single photo info
-  ############################################################
+  ##############################################################################
   get '/edit/:photoid' do
 
     FlickRaw.api_key = session['api_key']
@@ -115,12 +144,12 @@ class FlickrApp < Sinatra::Base
 
     flickr.photos.setMeta(:photo_id => @id,:title => @title,:description => @description)
 
-    redirect '/viewphotos/1';
+    redirect '/list';
   end
 
 
   # This takes a list of comma seperated photo ids and the tag you would like to remove.
-  ################################
+  ##############################################################################
   get '/detach/:photoids/:tag' do
 
     FlickRaw.api_key = session['api_key']
@@ -163,12 +192,12 @@ class FlickrApp < Sinatra::Base
         flag = 0
       end
     end
-    redirect '/viewphotos/1';
+    redirect '/list';
   end
 
 
   #delete photo
-  #############################################################
+  ##############################################################################
   get '/delete/:photoid' do
 
     FlickRaw.api_key = session['api_key']
@@ -182,7 +211,7 @@ class FlickrApp < Sinatra::Base
     flickr.photos.delete(:photo_id => photoId)
 
     flash[:notice] = "The photo has been deleted."
-    redirect '/viewphotos/1';
+    redirect '/list';
   end
 
   # Note to self, this is fine.
@@ -200,16 +229,15 @@ class FlickrApp < Sinatra::Base
       photosToAttach = photoIds.split(',')
       photosToAttach.each do |ids|
 
-        flickr.photos.addTags(:photo_id => ids.to_i,:tags => params[:tag].to_s)
-
+        flickr.photos.addTags(:photo_id => ids.to_i, :tags => params[:tag].to_s)
       end
     end
 
-    redirect '/viewphotos/1'
+    redirect '/list'
   end
 
   #upload new photo
-  ##############################################################
+  ##############################################################################
   get '/upload' do
     haml :upload
   end
@@ -250,7 +278,6 @@ class FlickrApp < Sinatra::Base
           title = params[:title]
         end
 
-
         # upload the file
         photoID = @flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :tags => (session['visitor_id'] + " " + session['app_id']), :is_public => 0, :hidden => 0
 
@@ -259,7 +286,7 @@ class FlickrApp < Sinatra::Base
 
         if photoID.to_i > 0
           flash[:notice] = "Photo Uploaded Successfully."
-          redirect "/viewphotos/1"
+          redirect "/list"
         else
           flash[:notice] = "Oops, something went wrong. Please try again."
           redirect "/upload"
@@ -267,4 +294,139 @@ class FlickrApp < Sinatra::Base
       end
     end
   end
+
+  def getUserPhotos
+
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
+    # App photos is all of the photos... Logical right?
+    @allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+
+    # Building the list of info for all of the applications photos because the search method does not return exactly what we need.
+    # This array should be parallel to the allPhotos array so that we can retrive the proper photos.
+    tmp = @allPhotos['photo']
+    @photoIds = tmp
+    @photoInfo = []
+    @userPhotos = []
+    tags = []
+    tagValues = []
+    count = 0
+
+    # Building a list of the information we need to filter the photos.
+    # The main difference between appPhotos and allPhotos is the amount of
+    # information included in each of the lists. appPhotos has tags included
+    # as well as most of the other info we need to display.
+    while count < @photoIds.length do
+      tmp = flickr.photos.getInfo :photo_id => (@photoIds[count]['id'])
+      @photoInfo.insert(-1, tmp);
+      count += 1
+    end
+
+    # Getting all of the tag values and putting them into their own arrays.
+    count = 0
+    while count < @photoInfo.length do
+      @photoInfo[count]['tags'].each do |tag|
+        tags.insert(-1, tag['_content'])
+      end
+      tagValues.insert(-1, tags)
+      tags = []
+      count += 1
+    end
+
+    # Here we are filtering based on if the photo has only the visitor id.
+    # If they have more than that, they are not included. So, the only photos that are
+    # included here are the one that will go into the module on the index page.
+    count = 0
+    flag = 0
+
+    while count < tagValues.length do
+      tagValues[count].each do |val|
+
+        if val == session['visitor_id'].to_s
+          flag += 1
+        else
+          if val == session['app_id'].to_s
+            flag -= 1
+          end
+        end
+      end
+
+      if flag == 1
+        @userPhotos.insert(-1, @photoInfo[count]);
+      end
+
+      flag = 0
+      count += 1
+    end
+    return @userPhotos
+  end #################################################### End of getUserPhotos.
+
+  def getAppPhotos
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
+    # App photos is all of the photos... Logical right?
+    @allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+
+    # Building the list of info for all of the applications photos because the search method does not return exactly what we need.
+    # This array should be parallel to the allPhotos array so that we can retrive the proper photos.
+    tmp = @allPhotos['photo']
+    @photoIds = tmp
+    @photoInfo = []
+    @appPhotos = []
+    tags = []
+    tagValues = []
+    count = 0
+
+    # Building a list of the information we need to filter the photos.
+    # The main difference between appPhotos and allPhotos is the amount of
+    # information included in each of the lists. appPhotos has tags included
+    # as well as most of the other info we need to display.
+    while count < @photoIds.length do
+      tmp = flickr.photos.getInfo :photo_id => (@photoIds[count]['id'])
+      @photoInfo.insert(-1, tmp);
+      count += 1
+    end
+
+    # Getting all of the tag values and putting them into their own arrays.
+    count = 0
+    while count < @photoInfo.length do
+      @photoInfo[count]['tags'].each do |tag|
+        tags.insert(-1, tag['_content'])
+      end
+      tagValues.insert(-1, tags)
+      tags = []
+      count += 1
+    end
+
+    # Here we are filtering based on if the photo has both the visitor id and the app id.
+    # If they have more (or less) than that, they are not included.
+    # So, the only photos that are included here are the one that will go into
+    # the "Slick" component on the index page.
+    count = 0
+    flag = 0
+
+    while count < tagValues.length do
+      tagValues[count].each do |val|
+        if val == session['visitor_id'].to_s || val == session['app_id'].to_s
+          flag += 1
+        end
+      end
+
+      if flag == 2
+        @appPhotos.insert(-1, @photoInfo[count]);
+      end
+
+      flag = 0
+      count += 1
+    end
+
+    return @appPhotos
+  end ##################################################### End of getAppPhotos.
+
 end

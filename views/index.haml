@@ -1,0 +1,97 @@
+.container-fluid
+  .row-fluid
+    .col-md-8.col-md-offset-2
+      %h3.alert
+        My photos
+        %span.glyphicon.glyphicon-film
+      %p{style: "margin-bottom:30px;width:70%;margin:0 auto;"} Click Upload to upload a new photo and attach it to this application.  Click Choose to attach your previously-uploaded photos to this application.
+      .upload-btn{style:'display:block;text-align:center;margin-top:20px;'}
+        %a.btn.btn-success.btn-lg{href:'/upload'}
+          %i.fa.fa-cloud-upload.fa-2x
+          %br
+          Upload
+        %a.btn.btn-primary.btn-lg{"data-toggle" => "modal", "data-target" => "#photoListModal"}
+          /%i.fa.fa-photo-camera.fa-2x
+          /%br
+          Choose
+
+      - if @totalPhotos == 0
+        .alert.alert-warning
+          %h3 You haven't attached any photos yet!
+          %h5 Upload new photos using the Upload button above, or attach previously-uploaded photos by clicking the Choose button to view your photo library.
+      - if @totalPhotos > 0
+        %div#slickcontainer
+          - @appPhotos.each do |photo|
+            .slickel
+              %img{src:'http://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg', style:"border:1px solid black;border-radius:5px;"}
+                #btnContainer
+                  .btn-group.dropup
+                    %a.btn.btn-primary{href:'/edit/' + photo['id'].to_s}
+                      %span.glyphicon.glyphicon-pencil
+                    %a.btn.btn-success{href:'/view/' + photo['id'].to_s + "/" + photo['farm'].to_s + "/" + photo['server'].to_s + "/" + photo['secret'].to_s}
+                      %span.glyphicon.glyphicon-film
+                    .btn-group
+                      %button.btn.btn-danger.dropdown-toggle{"data-toggle"=>"dropdown"}
+                        %span.glyphicon.glyphicon-remove
+                        %span.caret
+                      %ul.dropdown-menu{"role"=>"menu"}
+                        %li
+                          %a{href:('/detach/' + photo['id'].to_s + "/" + session['app_id'].to_s)}
+                            Detach
+                        %li
+                          %a{onclick:'return confirm("Are you sure you want to delete this photo?")', href:'/delete/' + photo['id']}
+                            Delete
+
+
+/ #uploadModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", role: "dialog", tabindex: "-1", 'data-backdrop' => 'static', 'data-keyboard' => 'false'}
+/   .modal-dialog
+/     .modal-content
+/       .modal-header
+/         %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} ×
+/         %h4#myModalLabel.modal-title Upload New photo
+/       .modal-body
+/         %form.alert{id:'upload-form', role: 'form', action:"/upload", method:"post", enctype:"multipart/form-data"}
+/           .form-group
+/             %label{for:'title'} Title
+/             %input.form-control{type:"text", name:"title", id:'title'}
+/           .form-group
+/             %label{for:'description'} Description
+/             %textarea.form-control{rows:'3', type:'text', name:'description', id:'description'}
+/           .form-group
+/             %label{for:'file'} File
+/             %input.form-control{type:"file", name:"file", id:'file'}
+/           -# %button.btn.btn-lg{type:"submit"} Submit
+/           -# %button.btn.btn-success{"data-dismiss" => "modal", type: "button"} Close
+/           %button.btn.btn-primary{type: "submit"} Upload
+
+#photoListModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", role: "dialog", tabindex: "-1",'data-backdrop' => 'static', 'data-keyboard' => 'false'}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} ×
+        %h3#myModalLabel.modal-title Your Photo Library
+      .modal-body
+        .row
+          - if @userPhotos.size == 0
+            .alert.alert-warning
+              %h3 You haven't uploaded any photos yet!
+              %h5 return to the main page and click the Upload button to upload new photos.
+          - if @userPhotos.length > 0
+            %small{style: "color:grey;"}
+              %i Please click on photos to attach/detach them to this application. Photos highlighted in green with a checkbox will be attached to your application when you click "Update". Photos not selected will be detached.
+        .row{style:"margin-top:10px;height:200px;overflow-x:hidden;overflow-y:scroll;"}
+          - @userPhotos.each do |photo|
+            .col-sm-3.col-md-3.col-xs-6
+              .thumbnail{id: photo['id'].to_s}
+                .photo-thumbnail{style: "margin:0 auto;height:75px;width:100px;background:url(" + 'http://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg' + ");"}
+                  %i.icon.fa.fa-check-circle-o.fa-4x{style:'margin-top:9px;'}
+                .caption
+                  %h5
+                    = photo['title']
+                  %p
+      .modal-footer
+        %a.btn.btn-danger{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} Cancel
+        - if @userPhotos.size == 0
+          %a.btn.btn-info#attachPhotoBtn{disabled:'true'} Update
+        - else
+          %a.btn.btn-info#attachPhotoBtn Update
