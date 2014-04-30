@@ -21,7 +21,7 @@
               %td
                 %a.btn.btn-success{href:'/delete/' + photo['id'].to_s} Delete
               %td
-                %a.btn.btn-success{href:'/detach/' + photo['id'].to_s + "/" + session['app_id']} Detach
+                %a.btn.btn-success{href:'/detach/' + photo['id'].to_s} Detach
 
 
               %td= photo['title']
@@ -46,7 +46,7 @@
               %td
                 %a.btn.btn-success{href:'/delete/' + photo['id'].to_s} Delete
               %td
-                %a.btn.btn-success{href:'/attach/' + photo['id'].to_s + "/" + session['app_id']} Attach
+                %a.btn.btn-success{href:'/attach/' + photo['id'].to_s} Attach
 
               %td= photo['title']
               %td= photo['id']

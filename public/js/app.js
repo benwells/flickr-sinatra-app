@@ -60,7 +60,7 @@ $('document').ready(function() {
       idStr = 0;
     }
 
-    $('#attachPhotoBtn').attr('href', '/attach/' + idStr + '/' + session['app_id'].to_s);
+    $('#attachPhotoBtn').attr('href', '/attach/' + idStr);
   });
 
   // $('#attachVidBtn').on('click', function () {
@@ -82,7 +82,7 @@ $('document').ready(function() {
     dots: true,
     infinite: false,
     speed: 300,
-    slidesToShow: 4,
+    slidesToShow: 3,
     // touchMove: true,
     slidesToScroll: 1
   })

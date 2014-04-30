@@ -150,7 +150,7 @@ class FlickrApp < Sinatra::Base
 
   # This takes a list of comma seperated photo ids and the tag you would like to remove.
   ##############################################################################
-  get '/detach/:photoids/:tag' do
+  get '/detach/:photoids' do
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
@@ -158,7 +158,7 @@ class FlickrApp < Sinatra::Base
     flickr.access_secret = session['access_secret']
 
     photoId = params[:photoids].to_s
-
+    tag = session['app_id'].to_s
 
     if photoId != '0'
       photosToDetach = photoId.to_s.split(',');
@@ -178,7 +178,7 @@ class FlickrApp < Sinatra::Base
         flag = 0
 
         while count < size do
-          if tags[count].to_s == params["tag"]
+          if tags[count].to_s == tag
             flickr.photos.removeTag(:tag_id => tags[count]['id'])
             flag = 1
           end
@@ -216,7 +216,7 @@ class FlickrApp < Sinatra::Base
 
   # Note to self, this is fine.
   ################################
-  get '/attach/:photoids/:tag' do
+  get '/attach/:photoids' do
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
@@ -229,7 +229,7 @@ class FlickrApp < Sinatra::Base
       photosToAttach = photoIds.split(',')
       photosToAttach.each do |ids|
 
-        flickr.photos.addTags(:photo_id => ids.to_i, :tags => params[:tag].to_s)
+        flickr.photos.addTags(:photo_id => ids.to_i, :tags => session['app_id'].to_s)
       end
     end
 
