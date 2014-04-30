@@ -192,7 +192,7 @@ class FlickrApp < Sinatra::Base
         flag = 0
       end
     end
-    redirect '/list';
+    redirect '/viewphotos';
   end
 
 
@@ -233,7 +233,7 @@ class FlickrApp < Sinatra::Base
       end
     end
 
-    redirect '/list'
+    redirect '/viewphotos'
   end
 
   #upload new photo
