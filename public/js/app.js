@@ -63,6 +63,10 @@ $('document').ready(function() {
     $('#attachPhotoBtn').attr('href', '/attach/' + idStr);
   });
 
+  // So, the photo modal is blocking the choose button as soon as the page is loaded.
+  // If we hide it using the .hide() function it is no problem.
+  $("#photoListModal").hide();
+
   // $('#attachVidBtn').on('click', function () {
   //   var idArray = "";
   //
