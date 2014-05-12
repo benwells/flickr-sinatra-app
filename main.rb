@@ -76,11 +76,11 @@ class FlickrApp < Sinatra::Base
     # Get all photos from flickr account
     # The search method automatically sorts by uploaded at desc.
 
-    # @userPhotos = getUserPhotos()
-    # @appPhotos = getAppPhotos()
+    @userPhotos = getUserPhotos()
+    @appPhotos = getAppPhotos()
 
-    @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
-    @appPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+    # @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+    # @appPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
     haml :viewphotos
   end
 
