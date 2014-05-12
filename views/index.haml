@@ -82,7 +82,7 @@
         .row{style:"margin-top:10px;height:200px;overflow-x:hidden;overflow-y:scroll;"}
           - @userPhotos.each do |photo|
             .col-sm-3.col-md-3.col-xs-6
-              .thumbnail{id: photo['id'].to_s}
+              .thumbnail{id: photo['id'].to_s, class: photo['class'].to_s}
                 .photo-thumbnail{style: "margin:0 auto;height:75px;width:100px;background:url(" + 'http://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg' + ");"}
                   %i.icon.fa.fa-check-circle-o.fa-4x{style:'margin-top:9px;'}
                 .caption

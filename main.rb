@@ -75,9 +75,12 @@ class FlickrApp < Sinatra::Base
   get '/viewphotos' do
     # Get all photos from flickr account
     # The search method automatically sorts by uploaded at desc.
-    @userPhotos = getUserPhotos()
-    @appPhotos = getAppPhotos()
 
+    # @userPhotos = getUserPhotos()
+    # @appPhotos = getAppPhotos()
+
+    @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+    @appPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
     haml :viewphotos
   end
 
@@ -103,12 +106,14 @@ class FlickrApp < Sinatra::Base
 
     @totalPhotos = @appPhotos.length + @userPhotos.length
 
-    # This is giving me an error.
-    # # Give all user photos that intersect with appPhotos a class attribute of 'selected'
-    # @appPhotos.each do |photo|
-    #   if (@appPhotos.include? photo)
-    #     photo['class'] = 'selected'
-    #   end
+    # .each was giving an error, so we are using an old school loop.
+    # count = 0
+    # while @userPhotos.length > count do
+    #     if (@appPhotos.include? @userPhotos[count])
+    #       # @userPhotos[count]['class'] = 'selected'
+    #       @selectClass.push("Value: " + count)
+    #     end
+    #   count += 1
     # end
 
     haml :index
@@ -347,10 +352,10 @@ class FlickrApp < Sinatra::Base
 
         if val == session['visitor_id'].to_s
           flag += 1
-        else
-          if val == session['app_id'].to_s
-            flag -= 1
-          end
+        # else
+        #   if val == session['app_id'].to_s
+        #     flag -= 1
+        #   end
         end
       end
 
