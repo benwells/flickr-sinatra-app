@@ -31,6 +31,7 @@ class FlickrApp < Sinatra::Base
     session['shared_secret'] = ENV['flickr_shared_secret'];
     session['access_token'] = ENV['flickr_access_token'];
     session['access_secret'] = ENV['flickr_access_secret'];
+    session['user_id'] = ENV['flickr_user_id']
     session['visitor_id'] = ENV['flickr_visitor_id'];
     session['app_id'] = ENV['flickr_app_id'];
 
@@ -47,13 +48,14 @@ class FlickrApp < Sinatra::Base
   end
 
   # initializer route
-  get '/init/:api_key/:shared_secret/:access_token/:access_secret/:visitor_id/:app_id/:mode' do
+  get '/init/:api_key/:shared_secret/:access_token/:access_secret/:user_id/:visitor_id/:app_id/:mode' do
 
     #store params in session
     session['api_key'] = params[:api_key];
     session['shared_secret'] = params[:shared_secret];
     session['access_token'] = params[:access_token];
     session['access_secret'] = params[:access_secret];
+    session['user_id'] = params[:user_id].to_s;
     session['visitor_id'] = "u" + params[:visitor_id];
     session['app_id'] = "a" + params[:app_id];
 
@@ -73,11 +75,19 @@ class FlickrApp < Sinatra::Base
   end
 
   get '/viewphotos' do
+
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
     # Get all photos from flickr account
     # The search method automatically sorts by uploaded at desc.
 
-    @userPhotos = getUserPhotos()
-    @appPhotos = getAppPhotos()
+    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+
+    @userPhotos = getPhotos(allPhotos, session['visitor_id'].to_s)
+    @appPhotos = getPhotos(allPhotos, session['app_id'].to_s)
 
     # @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
     # @appPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
@@ -101,20 +111,28 @@ class FlickrApp < Sinatra::Base
     FlickRaw.shared_secret = session['shared_secret']
     flickr.access_token = session['access_token']
     flickr.access_secret = session['access_secret']
-    @appPhotos = getAppPhotos()
-    @userPhotos = getUserPhotos()
+
+    allPhotos = []
+    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+
+    @userPhotos = []
+    @appPhotos = []
+
+    @userPhotos = getPhotos(allPhotos, session['visitor_id'].to_s)
+    @appPhotos = getPhotos(allPhotos, session['app_id'].to_s)
+
 
     @totalPhotos = @appPhotos.length + @userPhotos.length
 
-    # .each was giving an error, so we are using an old school loop.
-    # count = 0
-    # while @userPhotos.length > count do
-    #     if (@appPhotos.include? @userPhotos[count])
-    #       # @userPhotos[count]['class'] = 'selected'
-    #       @selectClass.push("Value: " + count)
-    #     end
-    #   count += 1
+    # Giving me an error: undefined method `[]=' for #
+    # # Give all user photos that intersect with appPhotos a class attribute of 'selected'
+    # @userPhotos.each do |photo|
+    #   photo['title'] = photo['title'][0..7] + "..." if photo['title'].length > 15
+    #   # if (@appPhotos.include? photo)
+    #   #   photo['class'] = 'selected'
+    #   # end
     # end
+
 
     haml :index
   end
@@ -300,7 +318,7 @@ class FlickrApp < Sinatra::Base
     end
   end
 
-  def getUserPhotos
+  def getPhotos (photos, tag)
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
@@ -308,14 +326,14 @@ class FlickrApp < Sinatra::Base
     flickr.access_secret = session['access_secret']
 
     # App photos is all of the photos... Logical right?
-    @allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+    allPhotos = []
+    allPhotos = photos
 
-    # Building the list of info for all of the applications photos because the search method does not return exactly what we need.
-    # This array should be parallel to the allPhotos array so that we can retrive the proper photos.
-    tmp = @allPhotos['photo']
-    @photoIds = tmp
-    @photoInfo = []
-    @userPhotos = []
+
+    tmp = allPhotos['photo']
+    photoIds = tmp
+    photoInfo = []
+    userPhotos = []
     tags = []
     tagValues = []
     count = 0
@@ -324,16 +342,16 @@ class FlickrApp < Sinatra::Base
     # The main difference between appPhotos and allPhotos is the amount of
     # information included in each of the lists. appPhotos has tags included
     # as well as most of the other info we need to display.
-    while count < @photoIds.length do
-      tmp = flickr.photos.getInfo :photo_id => (@photoIds[count]['id'])
-      @photoInfo.insert(-1, tmp);
+    while count < photoIds.length do
+      tmp = flickr.photos.getInfo :photo_id => (photoIds[count]['id'])
+      photoInfo.insert(-1, tmp);
       count += 1
     end
 
     # Getting all of the tag values and putting them into their own arrays.
     count = 0
-    while count < @photoInfo.length do
-      @photoInfo[count]['tags'].each do |tag|
+    while count < photoInfo.length do
+      photoInfo[count]['tags'].each do |tag|
         tags.insert(-1, tag['_content'])
       end
       tagValues.insert(-1, tags)
@@ -350,7 +368,7 @@ class FlickrApp < Sinatra::Base
     while count < tagValues.length do
       tagValues[count].each do |val|
 
-        if val == session['visitor_id'].to_s
+        if val == tag.to_s
           flag += 1
         # else
         #   if val == session['app_id'].to_s
@@ -359,79 +377,14 @@ class FlickrApp < Sinatra::Base
         end
       end
 
-      if flag == 1
-        @userPhotos.insert(-1, @photoInfo[count]);
+      if flag >= 1
+        userPhotos.insert(-1, photoInfo[count]);
       end
 
       flag = 0
       count += 1
     end
-    return @userPhotos
-  end #################################################### End of getUserPhotos.
-
-  def getAppPhotos
-    FlickRaw.api_key = session['api_key']
-    FlickRaw.shared_secret = session['shared_secret']
-    flickr.access_token = session['access_token']
-    flickr.access_secret = session['access_secret']
-
-    # App photos is all of the photos... Logical right?
-    @allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
-
-    # Building the list of info for all of the applications photos because the search method does not return exactly what we need.
-    # This array should be parallel to the allPhotos array so that we can retrive the proper photos.
-    tmp = @allPhotos['photo']
-    @photoIds = tmp
-    @photoInfo = []
-    @appPhotos = []
-    tags = []
-    tagValues = []
-    count = 0
-
-    # Building a list of the information we need to filter the photos.
-    # The main difference between appPhotos and allPhotos is the amount of
-    # information included in each of the lists. appPhotos has tags included
-    # as well as most of the other info we need to display.
-    while count < @photoIds.length do
-      tmp = flickr.photos.getInfo :photo_id => (@photoIds[count]['id'])
-      @photoInfo.insert(-1, tmp);
-      count += 1
-    end
-
-    # Getting all of the tag values and putting them into their own arrays.
-    count = 0
-    while count < @photoInfo.length do
-      @photoInfo[count]['tags'].each do |tag|
-        tags.insert(-1, tag['_content'])
-      end
-      tagValues.insert(-1, tags)
-      tags = []
-      count += 1
-    end
-
-    # Here we are filtering based on if the photo has both the visitor id and the app id.
-    # If they have more (or less) than that, they are not included.
-    # So, the only photos that are included here are the one that will go into
-    # the "Slick" component on the index page.
-    count = 0
-    flag = 0
-
-    while count < tagValues.length do
-      tagValues[count].each do |val|
-        if val == session['visitor_id'].to_s || val == session['app_id'].to_s
-          flag += 1
-        end
-      end
-
-      if flag == 2
-        @appPhotos.insert(-1, @photoInfo[count]);
-      end
-
-      flag = 0
-      count += 1
-    end
-
-    return @appPhotos
-  end ##################################################### End of getAppPhotos.
+    return userPhotos
+  end ######################################################## End of getPhotos.
 
 end
