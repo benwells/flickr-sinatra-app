@@ -11,8 +11,8 @@
           %br
           Upload
         %a.btn.btn-primary.btn-lg{"data-toggle" => "modal", "data-target" => "#photoListModal"}
-          /%i.fa.fa-photo-camera.fa-2x
-          /%br
+          %i.fa.fa-camera.fa-2x
+          %br
           Choose
 
       - if @totalPhotos == 0
@@ -23,7 +23,7 @@
         %div#slickcontainer
           - @appPhotos.each do |photo|
             .slickel
-              %img{src:'http://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg', style:"border:1px solid black;border-radius:5px;"}
+              %img{src:'http://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg', style:"border:1px solid black;border-radius:5px;width:200px;height:200px;"}
                 #btnContainer
                   .btn-group.dropup
                     %a.btn.btn-primary{href:'/edit/' + photo['id'].to_s}

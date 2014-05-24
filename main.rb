@@ -32,8 +32,8 @@ class FlickrApp < Sinatra::Base
     session['access_token'] = ENV['flickr_access_token'];
     session['access_secret'] = ENV['flickr_access_secret'];
     session['user_id'] = ENV['flickr_user_id']
-    session['visitor_id'] = ENV['flickr_visitor_id'];
-    session['app_id'] = ENV['flickr_app_id'];
+    session['visitor_id'] = "u" + ENV['flickr_visitor_id'];
+    session['app_id'] = "a" + ENV['flickr_app_id'];
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
@@ -125,13 +125,13 @@ class FlickrApp < Sinatra::Base
     @totalPhotos = @appPhotos.length + @userPhotos.length
 
     # Giving me an error: undefined method `[]=' for #
-    # # Give all user photos that intersect with appPhotos a class attribute of 'selected'
-    # @userPhotos.each do |photo|
-    #   photo['title'] = photo['title'][0..7] + "..." if photo['title'].length > 15
-    #   # if (@appPhotos.include? photo)
-    #   #   photo['class'] = 'selected'
-    #   # end
-    # end
+    # Give all user photos that intersect with appPhotos a class attribute of 'selected'
+    @userPhotos.each do |photo|
+      photo['title'] = photo['title'][0..7] + "..." if photo['title'].length > 15
+      if (@appPhotos.include? photo)
+        photo['class'] = 'selected'
+      end
+    end
 
 
     haml :index
