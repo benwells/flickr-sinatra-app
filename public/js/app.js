@@ -6,12 +6,12 @@ $('document').ready(function() {
   // });
 
   //upload form stuff
-  $('#upload-form').on('submit', function(e) {
-    e.preventDefault();
-    $('[type=submit]').prop('disabled',true).html('Uploading, Please Wait... <i class="fa fa-spin fa-spinner">');
-    // $('#uploadModal').modal('hide');
-    $(this).off('submit').submit();
-  });
+  // $('#upload-form').on('submit', function(e) {
+  //   e.preventDefault();
+  //   $('[type=submit]').prop('disabled',true).html('Uploading, Please Wait... <i class="fa fa-spin fa-spinner">');
+  //   // $('#uploadModal').modal('hide');
+  //   $(this).off('submit').submit();
+  // });
 
   //hide flash message after 5 seconds
   setTimeout(function () {
