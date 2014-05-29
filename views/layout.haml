@@ -1,8 +1,12 @@
 !!!
 %html
   %header
-    %script{src:"http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"}
-    %script{src:"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"}
+    %script{:src=>"https://code.jquery.com/jquery-1.11.0.min.js"}
+    -# Some of the photo desk crap is depreciated so we need this to make it work.
+    %script{:src=>"http://code.jquery.com/jquery-migrate-1.2.1.js"}
+    -# This is an old call. The new stuff is fixing some errors that were occuring in the photo desk plugin.
+    -#%script{:src=>"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"}
+    %script{:src=>"../js/jquery-ui-1.10.4.custom.js"}
     %script{:src=>"../js/jquery.transform-0.6.2.min.js"}
     %script{:src=>"../js/jquery.animate-shadow-min.js"}
 
@@ -21,15 +25,11 @@
     - if flash[:notice]
       %p.alert.alert-info= flash[:notice]
     =yield
-  %script{:src=>"https://code.jquery.com/jquery-1.11.0.min.js"}
+
 
 
   -# New stuff added 05/23/14
   %script{:src=>"//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"}
-
-  -# Some of the photo desk crap is depreciated so we need this to make it work.
-  %script{:src=>"http://code.jquery.com/jquery-migrate-1.2.1.js"}
-
 
   %script{:src=>"../js/slick.min.js"}
   %script{:src=>"../js/app.js"}
