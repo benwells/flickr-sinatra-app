@@ -136,6 +136,7 @@ class FlickrApp < Sinatra::Base
     allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
 
     @userPhotos = []
+    @selectedPhotos = []
     @appPhotos = []
 
     @userPhotos = getPhotos(allPhotos, session['visitor_id'].to_s, 1)
@@ -147,17 +148,22 @@ class FlickrApp < Sinatra::Base
     # Giving me an error: undefined method `[]=' for #
     # Note to self: the line with the if statement is the problem. It is not working for the way Flickr is doing things.
     # Give all user photos that intersect with appPhotos a class attribute of 'selected'
-    # @userPhotos.each do |photo|
-    #   photo['title'] = photo['title'][0..7] + "..." if photo['title'].length > 15
-    #
-    #   @appPhotos.each do |appPhoto|
-    #     if (appPhoto['photo_id'] == photo['photo_id'])
-    #       # Problem is I cannot access photo['class'] because ruby won't let me
-    #       # access photo.
-    #       puts("This is stupid.")
-    #     end
-    #   end
-    # end
+    count = 0
+    @userPhotos.each do |photo|
+      photo['title'] = photo['title'][0..7] + "..." if photo['title'].length > 15
+
+      @appPhotos.each do |appPhoto|
+        if (appPhoto['id'] == photo['id'])
+          @selectedPhotos.push({"class" => "selected"})
+        end
+      end
+
+      if(@selectedPhotos[count] == nil)
+        @selectedPhotos.push({"class" => "not-selected"})
+      end
+        count += 1
+
+    end
 
     haml :index
   end

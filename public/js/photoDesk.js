@@ -1,3 +1,4 @@
+
 function runPhotoDeskLogic() {
     /**
      * idx:
@@ -210,7 +211,13 @@ function runPhotoDeskLogic() {
                         $(this).remove();
                     });
                     $photo.prepend($nav);
-                    $photo.draggable('destroy').find('.delete').hide().andSelf().find('.pd_hold').unbind('mousedown').bind('mousedown', function() {
+                    $photo.draggable('destroy')
+                        .find('.delete')
+                        .hide()
+                        .andSelf()
+                        .find('.pd_hold')
+                        .unbind('mousedown')
+                        .bind('mousedown', function() {
                             return false;
                         });
 
@@ -319,7 +326,8 @@ function runPhotoDeskLogic() {
             var $photo = $(this);
             $photo.draggable({
                 containment: '#pd_container'
-            }).find('.delete').show();
+            }).find('.delete')
+                .show()
         }).find('.pd_hold').unbind('mousedown').bind('mousedown', function(e) {
             var $photo = $(this).parent();
             mouseDown($photo);
