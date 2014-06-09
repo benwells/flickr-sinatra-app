@@ -7,7 +7,7 @@
           %th Title
           %th Date Uploaded
         %tbody
-          - @appPhotos.each do |photo|
+          - @allUserPhotos.each do |photo|
             %tr
               %td
                 %a.btn.btn-success{href:'/view/' + photo['id'].to_s + '/' + photo['farm'].to_s + '/' + photo['server'].to_s + '/' + photo['secret'].to_s} View

@@ -75,7 +75,7 @@ class FlickrApp < Sinatra::Base
   end
 
 
-  get '/photodesk' do
+  get '/photodesk/:page' do
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
     flickr.access_token = session['access_token']
@@ -84,11 +84,30 @@ class FlickrApp < Sinatra::Base
     # Get all photos from flickr account
     # The search method automatically sorts by uploaded at desc.
 
-    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+    # We need to call this twice so the pagination works properly. For more, detail, ask Brandon. If you don't know a Brandon you are SOL, sorry bout that.
+    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '500',:page => "1")
 
+    @totalPhotos = 0
+    @totalPhotos = allPhotos.length
+
+
+    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '5',:page => params[:page].to_i)
     @allUserPhotos = getPhotos(allPhotos, session['user_id'].to_s, 1)
 
-    @totalPhotos = @allUserPhotos.length
+
+
+    @currentPage = params[:page].to_i
+    @lastPhoto
+    @firstPhoto = 0
+
+    # set first Photo of current page`
+    @currentPage == 1 ?  @firstPhoto = 1 : @firstPhoto = @currentPage * 5 - 4;
+
+    # set pagination variables
+    @lastPhoto = @totalPhotos < 5 ? @totalPhotos : @firstPhoto.to_i + 4 > @totalPhotos ? @totalPhotos : @firstPhotos.to_i + 4;
+
+    @numPages = (@totalPhotos.to_f / 5).ceil;
+    #@allUserPhotos = @allUserPhotos[@firstPhoto-1..@lastPhoto-1]
 
     haml :photoDesk
   end
@@ -104,10 +123,9 @@ class FlickrApp < Sinatra::Base
     # Get all photos from flickr account
     # The search method automatically sorts by uploaded at desc.
 
-    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '500',:page => '1')
 
-    @userPhotos = getPhotos(allPhotos, session['visitor_id'].to_s, 1)
-    @appPhotos = getPhotos(@userPhotos, session['app_id'].to_s, 0)
+    @allUserPhotos = getPhotos(allPhotos, session['user_id'].to_s, 1)
 
     # @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
     # @appPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
@@ -145,8 +163,6 @@ class FlickrApp < Sinatra::Base
 
     @totalPhotos = @appPhotos.length + @userPhotos.length
 
-    # Giving me an error: undefined method `[]=' for #
-    # Note to self: the line with the if statement is the problem. It is not working for the way Flickr is doing things.
     # Give all user photos that intersect with appPhotos a class attribute of 'selected'
     count = 0
     @userPhotos.each do |photo|

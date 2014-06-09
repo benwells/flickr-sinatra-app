@@ -9,6 +9,27 @@
         %a.backdesk{href:"#", style:"display:none;"}Back to Desk
         %a.viewall{href:"#"}View All
 
+    - if @totalPhotos > 0
+      %div
+        .pages{style:"position:absolute;top:0;left:0;"}
+          %small.clearfix
+            Showing Videos
+            = @firstPhoto
+            to
+            = @lastPhoto
+            of
+            = @totalPhotos
+          - if @totalPhotos > 5
+            %ul.pagination
+              %li
+                %a.active{:href => ("/photodesk/" + (@currentPage - 1).to_s unless @currentPage == 1 )} &laquo;
+              - (1..@numPages).each do |val|
+                %li{:class => ("disabled" unless val != @currentPage)}
+                  %a{href:"/photodesk/" + val.to_s}= val
+              %li
+                %a{:href => ("/photodesk/" + (@currentPage + 1).to_s unless @currentPage == @numPages )} &raquo;
+
+
   - if @totalPhotos > 0
     %div#pd_container.pd_container
       - @allUserPhotos.each do |photo|

@@ -140,9 +140,11 @@ function runPhotoDeskLogic() {
                 var param = {
                     'width': '-=40px',
                     'height': '-=40px',
-                    'top': newTop + 'px',
-                    'left': newLeft + 'px',
-                    'rotate': r + 'deg',
+                    // Took these out because they are putting the photo in a random
+                    // position. 
+                    //'top': newTop + 'px',
+                    //'left': newLeft + 'px',
+                    //'rotate': r + 'deg',
                     'shadow': '0 0 5px #000'
                 };
             $photo.stop(true, true).animate(param, 200).find('img').stop(true, true).animate({
