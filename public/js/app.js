@@ -60,7 +60,7 @@ $('document').ready(function() {
       idStr = 0;
     }
 
-    $('#attachPhotoBtn').attr('href', '/attach/' + idStr);
+    $('#attachPhotoBtn').attr('href', '/attach/' + idStr + "/" + detachStr);
   });
 
   // So, the photo modal is blocking the choose button as soon as the page is loaded.

@@ -33,7 +33,7 @@ a.pd_next_photo {
 a.pd_next_photo:hover, a.pd_loading:hover {
     opacity:1.0;
 }
-.pd_options_bar a.viewall, .pd_options_bar a.shuffle, .pd_options_bar a.backdesk {
+.pd_options_bar a.viewwall, .pd_options_bar a.shuffle, .pd_options_bar a.backdesk {
     outline:none;
     padding:0px 15px 0px 50px;
     line-height:47px;
@@ -52,7 +52,7 @@ a.pd_next_photo:hover, a.pd_loading:hover {
     -webkit-border-radius:8px;
     border-radius:8px;
 }
-.pd_options_bar a.viewall {
+.pd_options_bar a.viewwall {
     background:#B8B8B8 url(/img/viewall.png) no-repeat 10px 50%;
 }
 .pd_options_bar a.shuffle {
@@ -61,7 +61,7 @@ a.pd_next_photo:hover, a.pd_loading:hover {
 .pd_options_bar a.backdesk {
     background:#B8B8B8 url(/img/backdesk.png) no-repeat 10px 50%;
 }
-.pd_options_bar a.viewall:hover, .pd_options_bar a.shuffle:hover, .pd_options_bar a.backdesk:hover {
+.pd_options_bar a.viewwall:hover, .pd_options_bar a.shuffle:hover, .pd_options_bar a.backdesk:hover {
     opacity:1.0;
     text-shadow:1px 1px 1px #fff;
     -moz-box-shadow:1px 1px 2px #fff;

@@ -30,17 +30,16 @@
                       %span.glyphicon.glyphicon-pencil
                     %a.btn.btn-success{href:'/view/' + photo['id'].to_s + "/" + photo['farm'].to_s + "/" + photo['server'].to_s + "/" + photo['secret'].to_s}
                       %span.glyphicon.glyphicon-film
-                    .btn-group
-                      %button.btn.btn-danger.dropdown-toggle{"data-toggle"=>"dropdown"}
-                        %span.glyphicon.glyphicon-remove
-                        %span.caret
-                      %ul.dropdown-menu{"role"=>"menu"}
-                        %li
-                          %a{href:('/detach/' + photo['id'].to_s)}
-                            Detach
-                        %li
-                          %a{onclick:'return confirm("Are you sure you want to delete this photo?")', href:'/delete/' + photo['id']}
-                            Delete
+                    %button.btn.btn-danger.dropdown-toggle{"data-toggle"=>"dropdown", style: "height: 40px;"}
+                      %span.glyphicon.glyphicon-remove
+                      %span.caret
+                    %ul.dropdown-menu{"role"=>"menu"}
+                      %li
+                        %a{href:('/detach/' + photo['id'].to_s + "/" + "e")}
+                          Detach
+                      %li
+                        %a{onclick:'return confirm("Are you sure you want to delete this photo?")', href:'/delete/' + photo['id']}
+                          Delete
 
 
 / #uploadModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", role: "dialog", tabindex: "-1", 'data-backdrop' => 'static', 'data-keyboard' => 'false'}
@@ -87,7 +86,7 @@
                   %i.icon.fa.fa-check-circle-o.fa-4x{style:'margin-top:9px;'}
                 .caption
                   %h5
-                    = photo['title']
+                    = @photoTitles[index]
                   %p
       .modal-footer
         %a.btn.btn-danger{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} Cancel

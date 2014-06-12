@@ -85,7 +85,7 @@ class FlickrApp < Sinatra::Base
     # The search method automatically sorts by uploaded at desc.
 
     # We need to call this twice so the pagination works properly. For more, detail, ask Brandon. If you don't know a Brandon you are SOL, sorry bout that.
-    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '500',:page => "1")
+    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '1000',:page => "1")
 
     @totalPhotos = 0
     @totalPhotos = allPhotos.length
@@ -110,6 +110,38 @@ class FlickrApp < Sinatra::Base
     #@allUserPhotos = @allUserPhotos[@firstPhoto-1..@lastPhoto-1]
 
     haml :photoDesk
+  end
+
+
+  get '/visitorphotodesk/:page' do
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
+    # Get all photos from flickr account
+    # The search method automatically sorts by uploaded at desc.
+    # We need to call this twice so the pagination works properly. For more, detail, ask Brandon. If you don't know a Brandon you are SOL, sorry bout that.
+    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '1000',:page => "1")
+    @totalPhotos = 0
+    @totalPhotos = allPhotos.length
+    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '5',:page => params[:page].to_i)
+
+    # Note to self, need to figure out if I am filtering on the correct thing.
+    # Do I need multiple calls?
+    @allVisitorPhotos = getPhotos(allPhotos, session['visitor_id'].to_s, 1)
+    @currentPage = params[:page].to_i
+    @lastPhoto
+    @firstPhoto = 0
+
+    # set first Photo of current page`
+    @currentPage == 1 ?  @firstPhoto = 1 : @firstPhoto = @currentPage * 5 - 4;
+
+    # set pagination variables
+    @lastPhoto = @totalPhotos < 5 ? @totalPhotos : @firstPhoto.to_i + 4 > @totalPhotos ? @totalPhotos : @firstPhotos.to_i + 4;
+    @numPages = (@totalPhotos.to_f / 5).ceil;
+
+    haml :visitorPhotoDesk
   end
 
 
@@ -155,18 +187,16 @@ class FlickrApp < Sinatra::Base
 
     @userPhotos = []
     @selectedPhotos = []
+    @photoTitles = []
     @appPhotos = []
 
     @userPhotos = getPhotos(allPhotos, session['visitor_id'].to_s, 1)
     @appPhotos = getPhotos(@userPhotos, session['app_id'].to_s, 0)
-
-
     @totalPhotos = @appPhotos.length + @userPhotos.length
 
     # Give all user photos that intersect with appPhotos a class attribute of 'selected'
     count = 0
     @userPhotos.each do |photo|
-      photo['title'] = photo['title'][0..7] + "..." if photo['title'].length > 15
 
       @appPhotos.each do |appPhoto|
         if (appPhoto['id'] == photo['id'])
@@ -178,8 +208,19 @@ class FlickrApp < Sinatra::Base
         @selectedPhotos.push({"class" => "not-selected"})
       end
         count += 1
-
     end
+
+    # Setting title lengths
+    count = 0
+    while (@userPhotos.length > count)
+      if(@userPhotos[count]['title'].length > 15)
+        @photoTitles[count] = (@userPhotos[count]['title'][0..7] + "...")
+      else
+        @photoTitles[count] = @userPhotos[count]['title']
+      end
+      count +=1
+    end
+
 
     haml :index
   end
@@ -220,7 +261,7 @@ class FlickrApp < Sinatra::Base
 
   # This takes a list of comma seperated photo ids and the tag you would like to remove.
   ##############################################################################
-  get '/detach/:photoids' do
+  get '/detach/:photoids/:mode' do
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
@@ -228,7 +269,13 @@ class FlickrApp < Sinatra::Base
     flickr.access_secret = session['access_secret']
 
     photoId = params[:photoids].to_s
-    tag = session['app_id'].to_s
+
+    if params['mode'] == "v"
+      tag = session['user_id'].to_s
+    else
+      tag = session['app_id'].to_s
+    end
+
 
     if photoId != '0'
       photosToDetach = photoId.to_s.split(',');
@@ -262,7 +309,13 @@ class FlickrApp < Sinatra::Base
         flag = 0
       end
     end
-    redirect '/list';
+
+    if params['mode'] == "v"
+      redirect '/viewphotos'
+    else
+      flash[:notice] = "Photo detached from request."
+      redirect '/list';
+    end
   end
 
 
@@ -286,7 +339,7 @@ class FlickrApp < Sinatra::Base
 
   # Note to self, this is fine.
   ################################
-  get '/attach/:photoids' do
+  get '/attach/:photoids/:detachids' do
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
@@ -302,6 +355,49 @@ class FlickrApp < Sinatra::Base
         flickr.photos.addTags(:photo_id => ids.to_i, :tags => session['app_id'].to_s)
       end
     end
+
+
+
+
+    # Begin detach portion of route.
+    detachId = params[:detachids].to_s
+
+    tag = session['app_id'].to_s
+
+    if detachId != '0'
+      photosToDetach = detachId.to_s.split(',');
+
+      photosToDetach.each do |id|
+
+        info = flickr.photos.getInfo :photo_id => id.to_i
+
+        hashResponse = (info.to_hash)
+
+        # This is an array of hashes.
+        tags = hashResponse['tags']['tag']
+
+        size = tags.length
+        count = 0
+        flag = 0
+
+        while count < size do
+          if tags[count].to_s == tag
+            flickr.photos.removeTag(:tag_id => tags[count]['id'])
+            flag = 1
+          end
+          count += 1
+        end
+
+        if flag != 1
+          flash[:notice] = "Error: Photo not found."
+        end
+        count = 0
+        flag = 0
+      end
+    end
+
+
+
 
     redirect '/list'
   end
@@ -349,7 +445,7 @@ class FlickrApp < Sinatra::Base
         end
 
         # upload the file
-        photoID = @flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :tags => (session['visitor_id'] + " " + session['app_id']), :is_public => 0, :hidden => 0
+        photoID = @flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :tags => (session['visitor_id'] + " " + session['app_id'] + " " + "#{session['user_id'].to_s}"), :is_public => 0, :hidden => 0
 
         #This is a pre-production call that should not be used in production code. Used only for testing outside of Rollbase
         # photoID = flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :is_public => 0, :hidden => 0
