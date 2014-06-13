@@ -88,6 +88,7 @@ $('document').ready(function() {
     speed: 300,
     slidesToShow: 3,
     // touchMove: true,
+    lazyLoad: 'ondemand',
     slidesToScroll: 1
   })
 

@@ -1,25 +1,26 @@
 !!!
 %html
   %header
+    %meta{content: "text/javascript", "http-equiv" => "content-script-type"}
     %script{:src=>"https://code.jquery.com/jquery-1.11.0.min.js"}
     -# Some of the photo desk crap is depreciated so we need this to make it work.
     %script{:src=>"https://code.jquery.com/jquery-migrate-1.2.1.js"}
     -# This is an old call. The new stuff is fixing some errors that were occuring in the photo desk plugin.
     -#%script{:src=>"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"}
-    %script{:src=>"../js/jquery-ui-1.10.4.custom.js"}
-    %script{:src=>"../js/jquery.transform-0.6.2.min.js"}
-    %script{:src=>"../js/jquery.animate-shadow-min.js"}
+    %script{:src=>"/js/jquery-ui-1.10.4.custom.js"}
+    %script{:src=>"/js/jquery.transform-0.6.2.min.js"}
+    %script{:src=>"/js/jquery.animate-shadow-min.js"}
 
     %link{:rel=>"stylesheet", :href=>"//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css"}
 
     -# New stuff added 05/23/14
     %link{:rel=>"stylesheet", :href=>"//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"}
-    %link{:rel=>"stylesheet", :href=>"../css/theme.css"}
-    %link{:rel=>"stylesheet", :href=>"../css/slick.css"}
-    %link{:rel=>"stylesheet", :href=>"../css/app.css"}
+    %link{:rel=>"stylesheet", :href=>"/css/theme.css"}
+    %link{:rel=>"stylesheet", :href=>"/css/slick.css"}
+    %link{:rel=>"stylesheet", :href=>"/css/app.css"}
 
     -# Photo Desk crap.
-    %link{:rel=>"stylesheet", :href=>"../css/photoDesk.css"}
+    %link{:rel=>"stylesheet", :href=>"/css/photoDesk.css"}
 
   %body
     - if flash[:notice]
@@ -29,8 +30,8 @@
   -# New stuff added 05/23/14
   %script{:src=>"//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"}
 
-  %script{:src=>"../js/slick.min.js"}
-  %script{:src=>"../js/app.js"}
+  %script{:src=>"/js/slick.min.js"}
+  %script{:type=>"text/javascript", :src=>"/js/app.js"}
 
   -# Photo Desk crap.
-  %script{:src=>"../js/photoDesk.js"}
+  %script{:src=>"/js/photoDesk.js"}

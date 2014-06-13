@@ -6,7 +6,7 @@ body {
     /*background:#ddd;*/
     font-family:"Myriad Pro", Helvetica, Arial, sans-serif;
     font-size:12px;
-    overflow:hidden;
+    overflow:auto;
 }
 a.pd_next_photo, a.pd_loading {
     z-index:999999;

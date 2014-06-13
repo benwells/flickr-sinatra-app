@@ -125,6 +125,7 @@ class FlickrApp < Sinatra::Base
     allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '1000',:page => "1")
     @totalPhotos = 0
     @totalPhotos = allPhotos.length
+
     allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '5',:page => params[:page].to_i)
 
     # Note to self, need to figure out if I am filtering on the correct thing.
@@ -169,7 +170,7 @@ class FlickrApp < Sinatra::Base
     # The photos are resized for some reason but you can specfiy how big you want them by adding a flag to the end of the url.
     # There are two separate flags you should be aware of: _m and _b the first makes the photos very small and the other just makes it so
     # the photos are not resized if they are less than a certain height or length. I have the second selected for obvious reasons.
-    @source = 'http://farm' + params[:farm] + '.static.flickr.com/' + params[:server] + '/' + params[:id] + '_' + params[:secret] + '_b.jpg'
+    @source = 'https://farm' + params[:farm] + '.static.flickr.com/' + params[:server] + '/' + params[:id] + '_' + params[:secret] + '_b.jpg'
     haml :view
   end
 
@@ -228,7 +229,7 @@ class FlickrApp < Sinatra::Base
 
   # Edit single photo info
   ##############################################################################
-  get '/edit/:photoid' do
+  get '/edit/:photoid/:mode' do
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
@@ -255,7 +256,11 @@ class FlickrApp < Sinatra::Base
 
     flickr.photos.setMeta(:photo_id => @id,:title => @title,:description => @description)
 
-    redirect '/list';
+    if params['mode'] == "l"
+      redirect '/list'
+    else
+      redirect 'visitorphotodesk/1'
+    end
   end
 
 
@@ -321,7 +326,7 @@ class FlickrApp < Sinatra::Base
 
   #delete photo
   ##############################################################################
-  get '/delete/:photoid' do
+  get '/delete/:photoid/:mode' do
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
@@ -335,6 +340,12 @@ class FlickrApp < Sinatra::Base
 
     flash[:notice] = "The photo has been deleted."
     redirect '/list';
+
+    if params['mode'] == "l"
+      redirect '/list'
+    else
+      redirect 'visitorphotodesk/1'
+    end
   end
 
   # Note to self, this is fine.
@@ -355,9 +366,6 @@ class FlickrApp < Sinatra::Base
         flickr.photos.addTags(:photo_id => ids.to_i, :tags => session['app_id'].to_s)
       end
     end
-
-
-
 
     # Begin detach portion of route.
     detachId = params[:detachids].to_s
@@ -395,9 +403,6 @@ class FlickrApp < Sinatra::Base
         flag = 0
       end
     end
-
-
-
 
     redirect '/list'
   end

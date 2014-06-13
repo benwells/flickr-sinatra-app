@@ -23,10 +23,10 @@
         %div#slickcontainer
           - @appPhotos.each do |photo|
             .slickel
-              %img{src:'http://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg', style:"border:1px solid black;border-radius:5px;width:200px;height:200px;"}
+              %img{"data-lazy" => 'https://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg', style:"border:1px solid black;border-radius:5px;width:200px;height:200px;"}
                 #btnContainer
                   .btn-group.dropup
-                    %a.btn.btn-primary{href:'/edit/' + photo['id'].to_s}
+                    %a.btn.btn-primary{href:'/edit/' + photo['id'].to_s + '/' + 'l'}
                       %span.glyphicon.glyphicon-pencil
                     %a.btn.btn-success{href:'/view/' + photo['id'].to_s + "/" + photo['farm'].to_s + "/" + photo['server'].to_s + "/" + photo['secret'].to_s}
                       %span.glyphicon.glyphicon-film
@@ -38,7 +38,7 @@
                         %a{href:('/detach/' + photo['id'].to_s + "/" + "e")}
                           Detach
                       %li
-                        %a{onclick:'return confirm("Are you sure you want to delete this photo?")', href:'/delete/' + photo['id']}
+                        %a{onclick:'return confirm("Are you sure you want to delete this photo?")', href:'/delete/' + photo['id'] + '/' + 'l'}
                           Delete
 
 

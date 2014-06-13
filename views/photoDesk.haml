@@ -35,5 +35,6 @@
       - @allUserPhotos.each do |photo|
         %div.pd_photo
           %div.pd_hold
-            %img{src:'http://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg', style:"width: 100%;"}
+            %img{src:'https://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg', style:"width: 100%;"}
+          %a.btn.btn-success.view-photo-btn{href:'/view/' + photo['id'].to_s + "/" + photo['farm'].to_s + "/" + photo['server'].to_s + "/" + photo['secret'].to_s} View
           %span.delete
