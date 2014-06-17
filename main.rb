@@ -396,9 +396,11 @@ class FlickrApp < Sinatra::Base
           count += 1
         end
 
-        if flag != 1
-          flash[:notice] = "Error: Photo not found."
-        end
+        # This was causing a bit of a problem because the attach and detach routes
+        # are the same right here. Because of the modal.
+        # if flag != 1
+        #   flash[:notice] = "Error: Photo not found."
+        # end
         count = 0
         flag = 0
       end
