@@ -6,12 +6,12 @@ $('document').ready(function() {
   // });
 
   //upload form stuff
-  $('#upload-form').on('submit', function(e) {
-    e.preventDefault();
-    $('[type=submit]').prop('disabled',true).html('Uploading, Please Wait... <i class="fa fa-spin fa-spinner">');
-    // $('#uploadModal').modal('hide');
-    $(this).off('submit').submit();
-  });
+  // $('#upload-form').on('submit', function(e) {
+  //   e.preventDefault();
+  //   $('[type=submit]').prop('disabled',true).html('Uploading, Please Wait... <i class="fa fa-spin fa-spinner">');
+  //   // $('#uploadModal').modal('hide');
+  //   $(this).off('submit').submit();
+  // });
 
   //hide flash message after 5 seconds
   setTimeout(function () {
@@ -60,7 +60,7 @@ $('document').ready(function() {
       idStr = 0;
     }
 
-    $('#attachPhotoBtn').attr('href', '/attach/' + idStr);
+    $('#attachPhotoBtn').attr('href', '/attach/' + idStr + "/" + detachStr);
   });
 
   // So, the photo modal is blocking the choose button as soon as the page is loaded.
@@ -88,7 +88,28 @@ $('document').ready(function() {
     speed: 300,
     slidesToShow: 3,
     // touchMove: true,
+    lazyLoad: 'ondemand',
     slidesToScroll: 1
   })
+
+  // File sizes must be greater than 15 KB
+  $('#file').bind('change', function() {
+    if((this.files[0].size) / 1024 < 15) {
+
+      // Build string and prepend it to the body tag.
+      var htmlString = '<p id="myError" style>Error: ​File size must be greater than 15 KB.​</p>';
+      $("body").prepend(htmlString);
+      $("#myError").addClass("​alert alert-danger");
+
+      //hide flash message after 5 seconds
+      setTimeout(function () {
+        $('.alert-danger').hide();
+      }, 5000);
+
+      $("[type='submit']").attr("disabled", "true");
+    } else {
+      $("[type='submit']").removeAttr("disabled");
+    }
+  });
 
 });

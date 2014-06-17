@@ -95,3 +95,13 @@ li.media {
 .photo-thumbnail {
   position:relative;
 }
+
+.view-photo-btn {
+  position:relative;
+  width:100%;
+  height: auto;
+}
+
+body {
+  overflow: auto;
+}

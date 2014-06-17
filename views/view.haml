@@ -6,7 +6,5 @@
           %i.fa.fa-chevron-left
         View Photo
         %span.glyphicon.glyphicon-film
-      %iframe.clearfix{:src=> @source + "", :width=>'500', :height =>'281', :frameborder=>'0'}
-
-
-
+      %div{:style=>"max-width:800px;"}
+        %img.clearfix{:src=> @source + "", :frameborder=>'0', :style=>"max-width:800px;"}

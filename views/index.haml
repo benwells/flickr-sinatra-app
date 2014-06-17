@@ -1,4 +1,4 @@
-.container-fluid
+  .container-fluid
   .row-fluid
     .col-md-8.col-md-offset-2
       %h3.alert
@@ -11,8 +11,8 @@
           %br
           Upload
         %a.btn.btn-primary.btn-lg{"data-toggle" => "modal", "data-target" => "#photoListModal"}
-          /%i.fa.fa-photo-camera.fa-2x
-          /%br
+          %i.fa.fa-camera.fa-2x
+          %br
           Choose
 
       - if @totalPhotos == 0
@@ -23,24 +23,23 @@
         %div#slickcontainer
           - @appPhotos.each do |photo|
             .slickel
-              %img{src:'http://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg', style:"border:1px solid black;border-radius:5px;"}
+              %img{"data-lazy" => 'https://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg', style:"border:1px solid black;border-radius:5px;width:200px;height:200px;"}
                 #btnContainer
                   .btn-group.dropup
-                    %a.btn.btn-primary{href:'/edit/' + photo['id'].to_s}
+                    %a.btn.btn-primary{href:'/edit/' + photo['id'].to_s + '/' + 'l'}
                       %span.glyphicon.glyphicon-pencil
                     %a.btn.btn-success{href:'/view/' + photo['id'].to_s + "/" + photo['farm'].to_s + "/" + photo['server'].to_s + "/" + photo['secret'].to_s}
                       %span.glyphicon.glyphicon-film
-                    .btn-group
-                      %button.btn.btn-danger.dropdown-toggle{"data-toggle"=>"dropdown"}
-                        %span.glyphicon.glyphicon-remove
-                        %span.caret
-                      %ul.dropdown-menu{"role"=>"menu"}
-                        %li
-                          %a{href:('/detach/' + photo['id'].to_s)}
-                            Detach
-                        %li
-                          %a{onclick:'return confirm("Are you sure you want to delete this photo?")', href:'/delete/' + photo['id']}
-                            Delete
+                    %button.btn.btn-danger.dropdown-toggle{"data-toggle"=>"dropdown", style: "height: 40px;"}
+                      %span.glyphicon.glyphicon-remove
+                      %span.caret
+                    %ul.dropdown-menu{"role"=>"menu"}
+                      %li
+                        %a{href:('/detach/' + photo['id'].to_s + "/" + "e")}
+                          Detach
+                      %li
+                        %a{onclick:'return confirm("Are you sure you want to delete this photo?")', href:'/delete/' + photo['id'] + '/' + 'l'}
+                          Delete
 
 
 / #uploadModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", role: "dialog", tabindex: "-1", 'data-backdrop' => 'static', 'data-keyboard' => 'false'}
@@ -80,14 +79,14 @@
             %small{style: "color:grey;"}
               %i Please click on photos to attach/detach them to this application. Photos highlighted in green with a checkbox will be attached to your application when you click "Update". Photos not selected will be detached.
         .row{style:"margin-top:10px;height:200px;overflow-x:hidden;overflow-y:scroll;"}
-          - @userPhotos.each do |photo|
+          - @userPhotos.each_with_index do |photo, index|
             .col-sm-3.col-md-3.col-xs-6
-              .thumbnail{id: photo['id'].to_s}
+              .thumbnail{id: photo['id'].to_s, class: @selectedPhotos[index]['class'].to_s}
                 .photo-thumbnail{style: "margin:0 auto;height:75px;width:100px;background:url(" + 'http://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg' + ");"}
                   %i.icon.fa.fa-check-circle-o.fa-4x{style:'margin-top:9px;'}
                 .caption
                   %h5
-                    = photo['title']
+                    = @photoTitles[index]
                   %p
       .modal-footer
         %a.btn.btn-danger{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} Cancel

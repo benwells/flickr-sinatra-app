@@ -1,52 +1,16 @@
-%a{:href => "/upload"} Upload New
 .container-fluid
   .row-fluid
     .col-md-8.col-md-offset-2
-      %h2 Photos Attached to Application
       %table.table.table-striped#view-table
         %thead
           %th
-          %th
-          %th
-          %th
           %th Title
-          %th Photo Id
+          %th Date Uploaded
         %tbody
-          - @appPhotos.each do |photo|
+          - @allUserPhotos.each do |photo|
             %tr
               %td
                 %a.btn.btn-success{href:'/view/' + photo['id'].to_s + '/' + photo['farm'].to_s + '/' + photo['server'].to_s + '/' + photo['secret'].to_s} View
-              %td
-                %a.btn.btn-success{href:'/edit/' + photo['id'].to_s} Edit
-              %td
-                %a.btn.btn-success{href:'/delete/' + photo['id'].to_s} Delete
-              %td
-                %a.btn.btn-success{href:'/detach/' + photo['id'].to_s} Detach
-
-
+                %a.btn.btn-success{href:'/detach/' + photo['id'].to_s + "/" + "v", onclick:'return confirm("Are you sure you want to detach this photo?")'} Detach
               %td= photo['title']
-              %td= photo['id']
-
-      %h2 All Photos
-      %table.table.table-striped#view-table
-        %thead
-          %th
-          %th
-          %th
-          %th
-          %th Title
-          %th Photo Id
-        %tbody
-          - @userPhotos.each do |photo|
-            %tr
-              %td
-                %a.btn.btn-success{href:'/view/' + photo['id'].to_s + '/' + photo['farm'].to_s + '/' + photo['server'].to_s + '/' + photo['secret'].to_s} View
-              %td
-                %a.btn.btn-success{href:'/edit/' + photo['id'].to_s} Edit
-              %td
-                %a.btn.btn-success{href:'/delete/' + photo['id'].to_s} Delete
-              %td
-                %a.btn.btn-success{href:'/attach/' + photo['id'].to_s} Attach
-
-              %td= photo['title']
-              %td= photo['id']
+              %td= photo['dates']['taken']

@@ -1,0 +1,51 @@
+.container-fluid
+  .row-fluid
+    .col-md-8.col-md-offset-2
+      %div
+        %a#pd_loading.pd_loading{href:"#"}
+
+      %div#pd_options_bar.pd_options_bar
+        %a.shuffle{href:"#"}Shuffle
+        %a.backdesk{href:"#", style:"display:none;"}Back to Desk
+        %a.viewwall{href:"/photodesk/1"}View All Photos
+
+    - if @totalPhotos > 0
+      %div
+        .pages{style:"position:absolute;top:0;left:0;"}
+          %small.clearfix
+            Showing Videos
+            = @firstPhoto
+            to
+            = @lastPhoto
+            of
+            = @totalPhotos
+          - if @totalPhotos > 5
+            %ul.pagination
+              %li
+                %a.active{:href => ("/visitorphotodesk/" + (@currentPage - 1).to_s unless @currentPage == 1 )} &laquo;
+              - (1..@numPages).each do |val|
+                %li{:class => ("disabled" unless val != @currentPage)}
+                  %a{href:"/visitorphotodesk/" + val.to_s}= val
+              %li
+                %a{:href => ("/visitorphotodesk/" + (@currentPage + 1).to_s unless @currentPage == @numPages )} &raquo;
+
+
+  - if @totalPhotos > 0
+    %div#pd_container.pd_container
+      - @allVisitorPhotos.each do |photo|
+        %div.pd_photo
+          %div.pd_hold
+            %img{src:'https://farm' + photo['farm'].to_s + '.static.flickr.com/' + photo['server'].to_s + '/' + photo['id'].to_s + '_' + photo['secret'].to_s + '_m.jpg', style:"width: 100%;"}
+          .btn-group{style:"width:100%;"}
+            %button.btn.btn-primary.dropdown-toggle{"data-toggle" => "dropdown", type: "button", style:"width:100%;"}
+              Actions
+              %span.caret
+            %ul.dropdown-menu{role: "menu"}
+              %li
+                %a.view-photo-btn{href:'/view/' + photo['id'].to_s + "/" + photo['farm'].to_s + "/" + photo['server'].to_s + "/" + photo['secret'].to_s} View
+              %li
+                %a.view-photo-btn{href:'/edit/' + photo['id'].to_s + '/' + 'v'} Edit
+              %li.divider
+              %li
+                %a.view-photo-btn{onclick:'return confirm("Are you sure you want to delete this photo?")', href:'/delete/' + photo['id'] + '/' + 'v'} Delete
+          %span.delete
