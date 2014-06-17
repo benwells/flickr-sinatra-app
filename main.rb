@@ -158,7 +158,8 @@ class FlickrApp < Sinatra::Base
 
     allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '500',:page => '1')
 
-    @allUserPhotos = getPhotos(allPhotos, session['user_id'].to_s, 1)
+    @allUserPhotos = getPhotos(allPhotos, session['visitor_id'].to_s, 1)
+    @allUserPhotos = getPhotos(allPhotos, session['app_id'].to_s, 1)
 
     # @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
     # @appPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
@@ -171,6 +172,7 @@ class FlickrApp < Sinatra::Base
     # There are two separate flags you should be aware of: _m and _b the first makes the photos very small and the other just makes it so
     # the photos are not resized if they are less than a certain height or length. I have the second selected for obvious reasons.
     @source = 'https://farm' + params[:farm] + '.static.flickr.com/' + params[:server] + '/' + params[:id] + '_' + params[:secret] + '_b.jpg'
+
     haml :view
   end
 
