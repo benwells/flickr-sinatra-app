@@ -437,7 +437,15 @@ class FlickrApp < Sinatra::Base
         redirect '/upload';
       else
 
+
         tmpfile = params[:file][:tempfile]
+        fileSize = params[:file].size
+
+        if(fileSize == nil)
+          flash[:notice] = "No file present"
+        else
+          flash[:notice] = "#{fileSize}"
+        end
 
         # If there is no title entered Flickr will add in the last part of the :tempfile value which looks like crap.
         # Here is my solution.
@@ -460,8 +468,9 @@ class FlickrApp < Sinatra::Base
           redirect "/list"
         else
           flash[:notice] = "Oops, something went wrong. Please try again."
-          redirect "/upload"
+          redirect "/upload  "
         end
+
       end
     end
   end
