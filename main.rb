@@ -23,29 +23,29 @@ class FlickrApp < Sinatra::Base
     STDERR.reopen(file)
   end
 
-  #before each route except the init,  set the flickr var from settings
-  before /^(?!\/(init))/ do
-
-    #SET SESSIONS FOR DEVELOPMENT ONLY
-    session['api_key'] = ENV['flickr_api_key'];
-    session['shared_secret'] = ENV['flickr_shared_secret'];
-    session['access_token'] = ENV['flickr_access_token'];
-    session['access_secret'] = ENV['flickr_access_secret'];
-    session['user_id'] = ENV['flickr_user_id']
-    session['visitor_id'] = "u" + ENV['flickr_visitor_id'];
-    session['app_id'] = "a" + ENV['flickr_app_id'];
-
-    FlickRaw.api_key = session['api_key']
-    FlickRaw.shared_secret = session['shared_secret']
-    f = FlickRaw::Flickr.new
-    f.access_token = session['access_token']
-    f.access_secret = session['access_secret']
-    settings.fsesh = f
-    #END DEVELOPMENT ONLY BLOCK
-
-    #for production
-    @flickr = settings.fsesh
-  end
+  # #before each route except the init,  set the flickr var from settings
+  # before /^(?!\/(init))/ do
+  #
+  #   #SET SESSIONS FOR DEVELOPMENT ONLY
+  #   session['api_key'] = ENV['flickr_api_key'];
+  #   session['shared_secret'] = ENV['flickr_shared_secret'];
+  #   session['access_token'] = ENV['flickr_access_token'];
+  #   session['access_secret'] = ENV['flickr_access_secret'];
+  #   session['user_id'] = ENV['flickr_user_id']
+  #   session['visitor_id'] = "u" + ENV['flickr_visitor_id'];
+  #   session['app_id'] = "a" + ENV['flickr_app_id'];
+  #
+  #   FlickRaw.api_key = session['api_key']
+  #   FlickRaw.shared_secret = session['shared_secret']
+  #   f = FlickRaw::Flickr.new
+  #   f.access_token = session['access_token']
+  #   f.access_secret = session['access_secret']
+  #   settings.fsesh = f
+  #   #END DEVELOPMENT ONLY BLOCK
+  #
+  #   #for production
+  #   @flickr = settings.fsesh
+  # end
 
   # initializer route
   get '/init/:api_key/:shared_secret/:access_token/:access_secret/:user_id/:visitor_id/:app_id/:mode' do
@@ -56,8 +56,8 @@ class FlickrApp < Sinatra::Base
     session['access_token'] = params[:access_token];
     session['access_secret'] = params[:access_secret];
     session['user_id'] = params[:user_id].to_s;
-    session['visitor_id'] = "u" + params[:visitor_id];
-    session['app_id'] = "a" + params[:app_id];
+    session['visitor_id'] = params[:visitor_id].to_s;
+    session['app_id'] = params[:app_id].to_s;
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']

@@ -12,7 +12,7 @@ function init_flickr_iframe (mode, height) {
         container = $("<div class='flex-photo widescreen'></div>"),
         // url = ["https://sinatra-blahaas.rhcloud.com",
         // Replace the first part with the pow info.
-        url = ["https://v.gdg.do",
+        url = ["https://flickr-app.dev/init",
               api_key,
               s_s,
               at,
