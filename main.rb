@@ -44,7 +44,7 @@ class FlickrApp < Sinatra::Base
   #   #END DEVELOPMENT ONLY BLOCK
   #
   #   #for production
-  #   @flickr = settings.fsesh
+  #   flickr = settings.fsesh
   # end
 
   # initializer route
@@ -61,10 +61,10 @@ class FlickrApp < Sinatra::Base
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
-    f = FlickRaw::Flickr.new
-    f.access_token = session['access_token']
-    f.access_secret = session['access_secret']
-    settings.fsesh = f
+    flickr = FlickRaw::Flickr.new
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+    settings.fsesh = flickr
 
     #redirect line for Brandon working on viewing photos
     if params[:mode] == 'e'
@@ -85,13 +85,13 @@ class FlickrApp < Sinatra::Base
     # The search method automatically sorts by uploaded at desc.
 
     # We need to call this twice so the pagination works properly. For more, detail, ask Brandon. If you don't know a Brandon you are SOL, sorry bout that.
-    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '1000',:page => "1")
+    allPhotos = flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '1000',:page => "1")
 
     @totalPhotos = 0
     @totalPhotos = allPhotos.length
 
 
-    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '5',:page => params[:page].to_i)
+    allPhotos = flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '5',:page => params[:page].to_i)
     @allUserPhotos = getPhotos(allPhotos, session['user_id'].to_s, 1)
 
 
@@ -122,11 +122,11 @@ class FlickrApp < Sinatra::Base
     # Get all photos from flickr account
     # The search method automatically sorts by uploaded at desc.
     # We need to call this twice so the pagination works properly. For more, detail, ask Brandon. If you don't know a Brandon you are SOL, sorry bout that.
-    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '1000',:page => "1")
+    allPhotos = flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '1000',:page => "1")
     @totalPhotos = 0
     @totalPhotos = allPhotos.length
 
-    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '5',:page => params[:page].to_i)
+    allPhotos = flickr.photos.search(:user_id => "me", :tags => "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '5',:page => params[:page].to_i)
 
     # Note to self, need to figure out if I am filtering on the correct thing.
     # Do I need multiple calls?
@@ -156,13 +156,13 @@ class FlickrApp < Sinatra::Base
     # Get all photos from flickr account
     # The search method automatically sorts by uploaded at desc.
 
-    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '500',:page => '1')
+    allPhotos = flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '500',:page => '1')
 
     @allUserPhotos = getPhotos(allPhotos, session['visitor_id'].to_s, 1)
-    @allUserPhotos = getPhotos(allPhotos, session['app_id'].to_s, 1)
+    @allUserPhotos = getPhotos(@allUserPhotos, session['app_id'].to_s, 0)
 
-    # @userPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
-    # @appPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+    # @userPhotos = flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+    # @appPhotos = flickr.photos.search(:user_id => "me", :tags => "#{session['app_id'].to_s}" + "," + "#{session['visitor_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
     haml :viewphotos
   end
 
@@ -180,13 +180,14 @@ class FlickrApp < Sinatra::Base
   ##############################################################################
   # The setup crap for the index page.
   get '/list' do
+
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
     flickr.access_token = session['access_token']
     flickr.access_secret = session['access_secret']
 
     allPhotos = []
-    allPhotos = @flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
+    allPhotos = flickr.photos.search(:user_id => "me", :tags => "#{session['user_id'].to_s}", :tag_mode => "ALL", :privacy_filter => '5', :per_page => '50',:page => '1')
 
     @userPhotos = []
     @selectedPhotos = []
@@ -249,6 +250,7 @@ class FlickrApp < Sinatra::Base
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
+    
     flickr.access_token = session['access_token']
     flickr.access_secret = session['access_secret']
 
@@ -277,11 +279,7 @@ class FlickrApp < Sinatra::Base
 
     photoId = params[:photoids].to_s
 
-    if params['mode'] == "v"
-      tag = session['user_id'].to_s
-    else
-      tag = session['app_id'].to_s
-    end
+    tag = session['app_id'].to_s
 
 
     if photoId != '0'
@@ -419,6 +417,11 @@ class FlickrApp < Sinatra::Base
 
   post '/upload' do
 
+    FlickRaw.api_key = session['api_key']
+    FlickRaw.shared_secret = session['shared_secret']
+    flickr.access_token = session['access_token']
+    flickr.access_secret = session['access_secret']
+
     form do
       field :file, :present => true
     end
@@ -455,7 +458,7 @@ class FlickrApp < Sinatra::Base
         end
 
         # upload the file
-        photoID = @flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :tags => (session['visitor_id'] + " " + session['app_id'] + " " + "#{session['user_id'].to_s}"), :is_public => 0, :hidden => 0
+        photoID = flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :tags => (session['visitor_id'] + " " + session['app_id'] + " " + "#{session['user_id'].to_s}"), :is_public => 0, :hidden => 0
 
         #This is a pre-production call that should not be used in production code. Used only for testing outside of Rollbase
         # photoID = flickr.upload_photo tmpfile, :title => title, :description => (params[:description] + ""), :is_public => 0, :hidden => 0

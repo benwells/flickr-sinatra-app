@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     backports (3.6.0)
-    flickraw (0.9.7)
+    flickraw (0.9.8)
     formkeeper (0.0.13)
       hpricot
       rack
@@ -42,7 +42,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  flickraw
+  flickraw (~> 0.9.8)
   haml
   newrelic_rpm
   shotgun
