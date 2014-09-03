@@ -89,8 +89,34 @@ $('document').ready(function() {
     slidesToShow: 3,
     // touchMove: true,
     lazyLoad: 'ondemand',
-    slidesToScroll: 1
-  })
+    slidesToScroll: 1,
+      responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        infinite: false,
+        arrows: false,
+        dots: true
+      }
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1
+      }
+    }
+  ]
+});
 
   // File sizes must be greater than 15 KB
   $('#file').bind('change', function() {
