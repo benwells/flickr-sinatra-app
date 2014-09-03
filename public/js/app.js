@@ -105,14 +105,20 @@ $('document').ready(function() {
       breakpoint: 600,
       settings: {
         slidesToShow: 2,
-        slidesToScroll: 2
+        slidesToScroll: 2,
+        infinite: false,
+        arrows: false,
+        dots: true
       }
     },
     {
       breakpoint: 480,
       settings: {
         slidesToShow: 1,
-        slidesToScroll: 1
+        slidesToScroll: 1,
+        infinite: false,
+        arrows: false,
+        dots: true
       }
     }
   ]
