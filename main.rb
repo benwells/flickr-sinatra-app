@@ -9,18 +9,18 @@ class FlickrApp < Sinatra::Base
   register Sinatra::Flash
 
   configure do
-    enable :sessions, :logging
+    enable :sessions#, :logging
     set :session_secret, "Session Secret for shotgun development"
-    set :environment, :development
+    # set :environment, :development
     set :protection, :except => :frame_options
     config_file "config/settings.yml"
     set :fsesh, nil
 
-    file = File.new("#{settings.environment}.log", 'a+')
-    file.sync = true
-    use Rack::CommonLogger, file
-    STDOUT.reopen(file)
-    STDERR.reopen(file)
+    # file = File.new("#{settings.environment}.log", 'a+')
+    # file.sync = true
+    # use Rack::CommonLogger, file
+    # STDOUT.reopen(file)
+    # STDERR.reopen(file)
   end
 
   # #before each route except the init,  set the flickr var from settings
@@ -250,7 +250,7 @@ class FlickrApp < Sinatra::Base
 
     FlickRaw.api_key = session['api_key']
     FlickRaw.shared_secret = session['shared_secret']
-    
+
     flickr.access_token = session['access_token']
     flickr.access_secret = session['access_secret']
 
