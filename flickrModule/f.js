@@ -25,6 +25,10 @@ function init_flickr_iframe (mode, height) {
     url = url.join('/');
     container.appendTo('[name="Photo Content Target"]');
     iframe.prop('src', url).appendTo('.flex-photo');
+
+    if(mode == 'e') {
+      $(".flex-photo.widescreen").css("padding-bottom", "600px");
+    }
   });
 }
 
