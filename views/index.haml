@@ -4,7 +4,7 @@
       %h3.alert
         My photos
         %span.glyphicon.glyphicon-film
-      %p{style: "margin-bottom:30px;width:70%;margin:0 auto;"} Click Upload to upload a new photo and attach it to this application.  Click Choose to attach your previously-uploaded photos to this application.
+      %p{style: "margin-bottom:30px;width:70%;margin:0 auto;"} Click Upload to upload a new photo and attach it to this application.<br>  Click Choose to attach your previously-uploaded photos to this application.
       .upload-btn{style:'display:block;text-align:center;margin-top:20px;'}
         %a.btn.btn-success.btn-lg{href:'/upload'}
           %i.fa.fa-cloud-upload.fa-2x
@@ -29,7 +29,7 @@
                     %a.btn.btn-primary{href:'/edit/' + photo['id'].to_s + '/' + 'l'}
                       %span.glyphicon.glyphicon-pencil
                     %a.btn.btn-success{href:'/view/' + photo['id'].to_s + "/" + photo['farm'].to_s + "/" + photo['server'].to_s + "/" + photo['secret'].to_s}
-                      %span.glyphicon.glyphicon-eye-open
+                      %span.glyphicon.glyphicon-zoom-in
                     %button.btn.btn-danger.dropdown-toggle{"data-toggle"=>"dropdown", style: "height: 40px;"}
                       %span.glyphicon.glyphicon-remove
                       %span.caret
