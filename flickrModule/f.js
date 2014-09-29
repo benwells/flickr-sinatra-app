@@ -23,12 +23,16 @@ function init_flickr_iframe (mode, height) {
               mode];
 
     url = url.join('/');
-    container.appendTo('[name="Photo Content Target"]');
-    iframe.prop('src', url).appendTo('.flex-photo');
+    //container.appendTo('[name="Photo Content Target"]');
+    iframe.appendTo('[name="Photo Content Target"]');
+    $('iframe').iFrameResize([{log: true}]);
 
-    if(mode == 'e') {
-      $(".flex-photo.widescreen").css("padding-bottom", "600px");
-    }
+    // iframe.prop('src', url).appendTo('.flex-photo');
+    iframe.prop('src', url);
+
+    // if(mode == 'e') {
+    //   $(".flex-photo.widescreen").css("padding-bottom", "600px");
+    // }
   });
 }
 
