@@ -25,16 +25,16 @@ function init_flickr_iframe (mode, height) {
     url = url.join('/');
     //container.appendTo('[name="Photo Content Target"]');
     iframe.appendTo('[name="Photo Content Target"]');
-    $('iframe').iFrameResize([{log: true}]);
 
     // iframe.prop('src', url).appendTo('.flex-photo');
     iframe.prop('src', url);
 
-    // if(mode == 'e') {
-    //   $(".flex-photo.widescreen").css("padding-bottom", "600px");
-    // }
+    if(mode == 'e') {
+        $('iframe').iFrameResize([{log: true}]);
+    }
   });
 }
+
 
 $('document').ready(function () {
   var g = getURLParameter('g');
@@ -42,9 +42,9 @@ $('document').ready(function () {
     init_flickr_iframe('e', '2000px');
   }
   else if (g == portal_pages.photo_review_page) {
-    init_flickr_iframe('v', '500px');
+    init_flickr_iframe('v', '350px');
   }
   else if (g == portal_pages.photo_view_page) {
-    init_flickr_iframe('v', '500px');
+    init_flickr_iframe('v', '350px');
   }
 });
